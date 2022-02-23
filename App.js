@@ -10,19 +10,20 @@ export default function App() {
         resizeMode="contain"
         source={require('./assets/splash.png')} />
     </View>
-    <View>
-    <TouchableOpacity>
-      <View style={styles.Rightbutton}>
-        <Text style={styles.ButtonText}>Sign Up</Text>
-      </View>
-    </TouchableOpacity>
+    <View style={styles.footer}>
+      <Text style={styles.footerText}>Welcome</Text>
     </View>
-    <View>
-    <TouchableOpacity>
-      <View style={styles.Leftbutton}>
-        <Text style={styles.ButtonText}>Log In</Text>
-      </View>
-    </TouchableOpacity>
+      <View >
+      <TouchableOpacity>
+        <View style={styles.Rightbutton}>
+          <Text style={styles.ButtonText}>Sign Up</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <View style={styles.Leftbutton}>
+          <Text style={styles.ButtonText}>Log In</Text>
+        </View>
+      </TouchableOpacity>
     </View>
   </>
   );
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
     height: 51,
     left: 220,
     right: 15,
-    bottom: 54,
+    bottom: 65,
     backgroundColor: '#F2994A',
     borderRadius: 100,
   },
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
     height: 51,
     left: 15,
     right: 220,
-    bottom: 54,
+    bottom: 65,
     backgroundColor: '#F2994A',
     borderRadius: 100,
   },
@@ -77,4 +78,31 @@ const styles = StyleSheet.create({
     flex: 1,
     
   },
+  footer:{
+    alignItems: 'center',
+    position: 'absolute',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 0.58,
+    shadowRadius: 16.00,
+    elevation: 24,
+    width: '100%',
+    height: 210,
+    top: 641,
+    backgroundColor: '#FFFFFF',
+  },
+  footerText:{
+    paddingTop: 20,
+    fontStyle: 'normal',
+    fontWeight: '500',
+    fontSize: 24,
+    lineHeight: 29,
+    textAlign: 'center',
+    color: '#000000',
+  }
 });
