@@ -1,13 +1,23 @@
-import React from "react";
+import React, {useState} from "react";
 import { SearchBar } from 'react-native-elements';
-import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image, Alert} from "react-native";
 import { ProgressBar, Colors } from 'react-native-paper';
-import { AntDesign } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { TouchableHighlight, TouchableOpacity } from "react-native";
+import { FlatList } from "react-native";
+import { SafeAreaView } from "react-native";
+import AddItemsModal from "../components/AddItemsModal";
 
 export default function Home() {
+    const [openModal, setOpenModal] = useState(false);
+    const [product, setProduct] = useState([
+        {key: 1, name: 'Bread', image:require('../assets/icon.png'), remainingDays: 2, progress: 0.25, progressColor: '#EB5757'},
+        {key: 2, name: 'Milk', image:require('../assets/splash.png'), remainingDays: 4,progress: 0.5, progressColor: '#F2994A'},
+        {key: 3, name: 'Yoghurt', image:require('../assets/splash.png'), remainingDays: 7,progress: 0.75, progressColor: '#219653'}
+    ]);
     return(
         <View >
+            
             <View style={styles.header}>
                 <TouchableOpacity>
                     <Text style={styles.hyperLink}>Profile</Text>
@@ -16,8 +26,9 @@ export default function Home() {
                 <TouchableOpacity>
                     <Text style={styles.hyperLink}>Filter</Text>
                 </TouchableOpacity>
-            </View>
+            </View>       
             <View style={styles.body}>
+                <AddItemsModal openModal={openModal} setOpenModal={setOpenModal}/>
                 <View style={styles.searchBarContainter}>
                     <SearchBar
                         containerStyle={styles.searchBar}
@@ -26,60 +37,45 @@ export default function Home() {
                         placeholder="Search"
                     />
                 </View>
-                <View style={styles.itemsContainer}>
+                <View style={styles.itemsContainer}>  
                     <Text style={styles.itemsHeader}>Items</Text>
-                    <ScrollView style={styles.itemsBody}>
-                        <View style={styles.item}>
-                            <View style={styles.itemsPicContainer}>
-                                <Image style={styles.image} source={require('../assets/icon.png')} /> 
-                            </View>
-                            <View style={styles.itemsDetailsContainer}>
-                                <View style={styles.itemDetailsHeaders}>
-                                    <Text style={styles.itemName}>Bread</Text>
-                                    <TouchableOpacity>
-                                        <Text style={styles.itemDelete}>Delete</Text>
-                                    </TouchableOpacity>
+                    <SafeAreaView style={styles.itemsBody}>
+                        <FlatList  
+                            data={product}
+                            renderItem={({item}) => (
+                                <View style={styles.item} key={item.key}>
+                                    <View style={styles.itemPicContainer}>
+                                        <Image style={styles.image} source={item.image} /> 
+                                    </View>
+                                    <View style={styles.itemDetailsContainer}>
+                                        <View style={styles.itemDetailsHeaders}>
+                                            <Text style={styles.itemName}>{item.name}</Text>
+                                            <TouchableOpacity>
+                                                <Text style={styles.itemDelete}>Delete</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={styles.itemDetailsFooter}>
+                                            <Text style={styles.itemDaysLeft}>{item.remainingDays} days left</Text>
+                                            <ProgressBar style={styles.itemStatus} progress={item.progress} color={item.progressColor} />                                
+                                        </View>
+                                    </View>
                                 </View>
-                                <ProgressBar style={styles.itemStatus} progress={0.25} color='#EB5757' />                                
-                            </View>
-                        </View>
-                        <View style={styles.item}>
-                            <View style={styles.itemsPicContainer}>
-                                <Image style={styles.image} source={require('../assets/splash.png')} /> 
-                            </View>
-                            <View style={styles.itemsDetailsContainer}>
-                                <View style={styles.itemDetailsHeaders}>
-                                    <Text style={styles.itemName}>Milk</Text>
-                                    <TouchableOpacity>
-                                        <Text style={styles.itemDelete}>Delete</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <ProgressBar style={styles.itemStatus} progress={0.5} color='#F2994A'/>                                
-                            </View>
-                        </View>
-                        <View style={styles.item}>
-                            <View style={styles.itemsPicContainer}>
-                                <Image style={styles.image} source={require('../assets/splash.png')} /> 
-                            </View>
-                            <View style={styles.itemsDetailsContainer}>
-                                <View style={styles.itemDetailsHeaders}>
-                                    <Text style={styles.itemName}>Yoghurt</Text>
-                                    <TouchableOpacity>
-                                        <Text style={styles.itemDelete}>Delete</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <ProgressBar style={styles.itemStatus} progress={0.7} color='#219653'/>                                
-                            </View>
-                        </View>
-                    </ScrollView>
+                            )}
+                        />
+                    </SafeAreaView>
                 </View>
             </View>
+            
             <View style={styles.footer}>
-                <TouchableOpacity onPress={console.log('buttonWorks')}>
+                <TouchableOpacity stlye={styles.footerPlus}>
                     <View>
-                        <AntDesign name="pluscircleo" stlye={styles.footerPlus} size={50}/>
+                        <MaterialIcons
+                        name='add-circle-outline'
+                        size={50}
+                        onPress={() => setOpenModal(true)}
+                        />
                     </View>
-                </TouchableOpacity>
+                </TouchableOpacity>        
             </View>
         </View>
         
@@ -93,7 +89,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row',
-        paddingTop: '5%',
+        marginTop: '5%',
     },
     headerText:{
         fontWeight: '600',
@@ -119,7 +115,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '15%',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         backgroundColor: '#F6F6F6',
     },
     searchBarContainter:{
@@ -135,39 +131,37 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         backgroundColor: '#F6F6F6'
     },
-    itemsContainer:{
-        width: '100%',
-        height: '90%',
-        backgroundColor: 'white',
-        flexDirection: 'column',
-    },
+    // itemsContainer:{
+    //     width: '100%',
+    //     height: '100%',
+    //     backgroundColor: 'white',
+    //     flexDirection: 'column',
+    // },
     itemsHeader:{
         fontWeight: '500',
         fontSize: 24,
         color: '#000000',
-        paddingLeft: '5%',
-        paddingTop: '5%',
-        paddingBottom: '5%',
+        marginLeft: '5%',
+        marginTop: '5%',
         height: '10%'
     },
     itemsBody:{
         flexDirection: 'column',
         height: '90%',
-        paddingTop: '5%',
-        flex: 1,
     },
     item:{
         flexDirection: 'row',
-        height: '100%',
+        padding: '1%',
         width: '100%',
+        height: '75%'
     },
-    itemsPicContainer:{
+    itemPicContainer:{
         width: '20%',
         height: '100%',
         alignItems: 'center',
         justifyContent: 'center',
     },
-    itemsDetailsContainer:{
+    itemDetailsContainer:{
         width: '80%',
         flexDirection: 'column',
         justifyContent: 'space-around',
@@ -178,11 +172,20 @@ const styles = StyleSheet.create({
     },
     itemDetailsHeaders:{
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+    },
+    itemDetailsFooter:{
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
     },
     itemName:{
         fontWeight: '600',
         fontSize: 16,
+        color: '#000000'
+    },
+    itemDaysLeft:{
+        fontWeight: '400',
+        fontSize: 12,
         color: '#000000'
     },
     itemDelete:{
@@ -192,11 +195,11 @@ const styles = StyleSheet.create({
     },
     itemStatus:{
         backgroundColor: '#F6F6F6',
-        height: '30%',
+        height: '45%',
         borderRadius: 100
     },
     image:{
-        width: '40%',
+        width: '10%',
         height: undefined,
         aspectRatio: 1,
         flex: 1,
