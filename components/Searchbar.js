@@ -16,6 +16,9 @@ export default class Searchbar extends Component {
                     inputContainerStyle={searchBarStyles.searchBarInput}
                     searchIcon={false}
                     placeholder="Search"
+                    onChangeText={(text) => this.props.searchFilterFunction(text)}
+                    onClear={(text) => this.props.searchFilterFunction('')}
+                    value={this.props.search}
                 />
             </View>
         );

@@ -2,6 +2,9 @@ import { StyleSheet } from "react-native";
 
 
 export default StyleSheet.create({
+    itemsContainer:{
+        height: '100%',
+    },
     itemsHeader:{
         fontWeight: '500',
         fontSize: 24,
@@ -22,7 +25,7 @@ export default StyleSheet.create({
     },
     itemPicContainer:{
         width: '20%',
-        height: '100%',
+        height: '75%',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -64,8 +67,8 @@ export default StyleSheet.create({
         borderRadius: 100
     },
     image:{
-        width: '10%',
-        height: undefined,
+        width: '30%',
+        height: '10%',
         aspectRatio: 1,
         flex: 1,
     },

@@ -16,7 +16,7 @@ export default class Footer extends Component {
                         <MaterialIcons
                         name='add-circle-outline'
                         size={50}
-                        onPress={() => setOpenModal(true)}
+                        onPress={() => this.props.setModalVisible(true)}
                         />
                     </View>
                 </TouchableOpacity>        
