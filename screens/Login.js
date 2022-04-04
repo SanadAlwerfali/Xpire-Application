@@ -10,11 +10,11 @@ import { ResponseType } from 'expo-auth-session';
 import { FacebookAuthProvider, getAuth, GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
 
 WebBrowser.maybeCompleteAuthSession();
-const navigation = useNavigation();
+
 
 export default function Login() {
-
-  WebBrowser.maybeCompleteAuthSession(); 
+    
+const navigation = useNavigation();
 
   // =============== FACEBOOK ==================
   // setting-up the auth request to the Provider
