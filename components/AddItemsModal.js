@@ -6,13 +6,16 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { addItem, getItems } from "../src/api/ItemsApi";
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import firebase from 'firebase/compat/app';
+import db from "../firebase";
 
 export default class AddItemsModal extends Component{
     constructor(props){
         super(props);
         this.state = {
-            image: "",
-            date: "",
+            itemName: "",
+            itemImage: "",
+            itemexpiryDate: "",
             datePickerModalVisible: false,
         }
     }
@@ -27,17 +30,11 @@ export default class AddItemsModal extends Component{
         });
 
         if (!result.cancelled) {
-            this.setState({ image : result.uri});
+            this.setState({ itemImage : result.uri});
+            return result.uri;
         }
-        console.log("value of Image is: " + this.state.image);
+    }
 
-    }
-    deleteImage = () => {
-        this.setState({image: ""});
-    }
-    deleteDate = () => {
-        this.setState({date: ""});
-    }
     pickImageFromCamera = async () => {
         // No permissions request is necessary for launching the image library
         const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -58,6 +55,13 @@ export default class AddItemsModal extends Component{
         }
     }
 
+    deleteImage = () => {
+        this.setState({itemImage: ""});
+    }
+    deleteDate = () => {
+        this.setState({date: ""});
+    }
+    
     hideDatePicker = () => {
         this.setState({
             datePickerModalVisible: false
@@ -65,24 +69,52 @@ export default class AddItemsModal extends Component{
       };
     
     handleConfirm = (date) => {
-        console.warn("A date has been picked: ", date);
         this.setState ({
-            date: date
+            itemexpiryDate: date
         });
         this.hideDatePicker();
     };
     
     toggleDateView = () => {
-        console.log("date is" + this.state.date);
         this.setState ({
             datePickerModalVisible: true
         });
-        console.log("datePickerModalVisible is" + this.state.datePickerModalVisible);
     } 
+
+    addItemsToDb = (itemData) => {
+        db.collection('users')
+        .doc("sW6JJvJ7Pq7sEnLKaCE1")
+        .update({
+            items: firebase.firestore.FieldValue.arrayUnion({
+                expiryDate: itemData.expiryDate,
+                image: itemData.image,
+                name: itemData.name
+            }),
+        })
+        this.props.setFilteredItems([...this.props.filteredUserItems, itemData]);
+        this.props.setMasterItems([...this.props.masterUserItems, itemData]);
+        
+        console.log("filtered data fter push: ", this.props.filteredUserItems);
+    }
+    
+    handleSubmit = () => {
+        if (this.state.itemImage!="" && this.state.itemexpiryDate!="" && this.state.itemName!=""){
+            this.addItemsToDb({
+                expiryDate: this.state.itemexpiryDate,
+                image: this.state.itemImage,
+                name: this.state.itemName
+            })
+            this.props.setModalVisible(false);
+        }
+        else{
+            console.warn('missing data');
+        }
+    }
+
     render () {
         let requestImgView;
         let dateView;
-        if (this.state.image == "") {
+        if (this.state.itemImage == "") {
             requestImgView = <View style={styles.imagePickerButtons}>
                         <TouchableOpacity style={styles.buttons} onPress={this.pickImageFromGallery}>
                             <Text style={styles.buttonText}>Gallery</Text>  
@@ -93,7 +125,7 @@ export default class AddItemsModal extends Component{
                     </View>
           } else {
             requestImgView = <View style={styles.imagePickerButtons}>
-                            <Image style={styles.image} source={{uri: this.state.image}} />
+                            <Image style={styles.image} source={{uri: this.state.itemImage}} />
                             <TouchableOpacity style={styles.buttons} onPress={this.pickImageFromGallery}>
                                 <Text style={styles.buttonText}>Replace Image</Text>  
                             </TouchableOpacity> 
@@ -102,7 +134,7 @@ export default class AddItemsModal extends Component{
                             </TouchableOpacity> 
                          </View>
           }
-          if (this.state.date == "") {
+          if (this.state.itemexpiryDate == "") {
 
             dateView =  <View style={styles.imagePickerButtons}>
                             <TouchableOpacity style={styles.buttons} onPress={this.toggleDateView}>
@@ -111,7 +143,7 @@ export default class AddItemsModal extends Component{
                         </View>
           } else {
             dateView = <View style={styles.imagePickerButtons}>
-                            <Text > Value:{this.state.date.toString()}</Text>
+                            <Text > Value:{this.state.itemexpiryDate.toString()}</Text>
                             <TouchableOpacity style={styles.buttons} onPress={this.toggleDateView}>
                                 <Text style={styles.buttonText}>Replace Date</Text>  
                             </TouchableOpacity> 
@@ -139,13 +171,33 @@ export default class AddItemsModal extends Component{
                             </TouchableOpacity>
                         </View>
                         <View style={styles.modalInputs}>
-                            <Formik
-                                initialValues={{name: '', image:'', remainingDays: ''}}
-                                onSubmit={(values) => 
-                                    addItem({
-                                        name: values.name,
-                                        expiryDate: values.expiryDate
-                                    })
+                            <TextInput
+                                style={styles.inputs}
+                                placeholder="Product Name"
+                                selectionColor="#F2994A"
+                                onChangeText={(text)=> {this.setState({ itemName: text})}}
+                            />
+                            {requestImgView}
+                            {dateView}
+                            <DateTimePickerModal
+                                isVisible={this.state.datePickerModalVisible}
+                                mode="date"
+                                display='inline'
+                                onConfirm={this.handleConfirm}
+                                onCancel={this.hideDatePicker}
+                                isDarkModeEnabled={true}
+                            />
+                            <TouchableOpacity style={styles.buttons} onPress={this.handleSubmit} >
+                                <Text style={styles.buttonText}>Submit</Text>  
+                            </TouchableOpacity>
+                            {/* <Formik
+                                initialValues={{name: '', image:'', expiryDate: ''}}
+                                onSubmit={(itemData) => 
+                                    addItemsToDb(
+                                        {name: itemData.name, 
+                                        image: itemData.image, 
+                                        expiryDate: itemData.expiryDate
+                                        })
                                 }
                             >
                             {(formikProps) => (
@@ -158,7 +210,19 @@ export default class AddItemsModal extends Component{
                                         value={formikProps.values.name}
                                     />
                                     {requestImgView}
+                                    {false &&
+                                        <TextInput
+                                        placeholder="Image file Value"
+                                        value={formikProps.values.image = this.pickImageFromGallery()}
+                                        />
+                                    }
                                     {dateView}
+                                    {false &&
+                                        <TextInput
+                                        placeholder="Date value"
+                                        value={formikProps.values.expiryDate = this.state.date}
+                                        />
+                                    }
                                     <DateTimePickerModal
                                         isVisible={this.state.datePickerModalVisible}
                                         mode="date"
@@ -174,7 +238,7 @@ export default class AddItemsModal extends Component{
                                 </View>  
                             )}
 
-                            </Formik>
+                            </Formik> */}
                         </View>
                     </View>
                 </Modal>

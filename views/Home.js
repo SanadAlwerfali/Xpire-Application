@@ -43,22 +43,21 @@ export default class Home extends Component {
             filteredUserItems: [],
             masterUserItems: [],
             isLoading: true,
-            filteredProducts: [
-                    {key: 1, name: 'Bread', image:require('../assets/breadd.png'), remainingDays: 2, progress: 0.25, progressColor: '#EB5757'},
-                    {key: 2, name: 'Milk', image:require('../assets/milkImage.png'), remainingDays: 4,progress: 0.5, progressColor: '#F2994A'},
-                    {key: 3, name: 'Yogurt', image:require('../assets/yoghurt.png'), remainingDays: 7,progress: 0.75, progressColor: '#219653'},
+            // filteredProducts: [
+            //         {key: 1, name: 'Bread', image:require('../assets/breadd.png'), remainingDays: 2, progress: 0.25, progressColor: '#EB5757'},
+            //         {key: 2, name: 'Milk', image:require('../assets/milkImage.png'), remainingDays: 4,progress: 0.5, progressColor: '#F2994A'},
+            //         {key: 3, name: 'Yogurt', image:require('../assets/yoghurt.png'), remainingDays: 7,progress: 0.75, progressColor: '#219653'},
                     
-                ],
-            masterProductsData: [
-                {key: 1, name: 'Bread', image:require('../assets/icon.png'), remainingDays: 2, progress: 0.25, progressColor: '#EB5757'},
-                {key: 2, name: 'Milk', image:require('../assets/splash.png'), remainingDays: 4,progress: 0.5, progressColor: '#F2994A'},
-                {key: 3, name: 'Yogurt', image:require('../assets/splash.png'), remainingDays: 7,progress: 0.75, progressColor: '#219653'}
-            ],
+            //     ],
+            // masterProductsData: [
+            //     {key: 1, name: 'Bread', image:require('../assets/icon.png'), remainingDays: 2, progress: 0.25, progressColor: '#EB5757'},
+            //     {key: 2, name: 'Milk', image:require('../assets/splash.png'), remainingDays: 4,progress: 0.5, progressColor: '#F2994A'},
+            //     {key: 3, name: 'Yogurt', image:require('../assets/splash.png'), remainingDays: 7,progress: 0.75, progressColor: '#219653'}
+            // ],
         }
     }
 
     updateUserItems = () => {
-        console.log("Mounted");
         db.collection('users')
         .get()
         .then(result => result.docs)
@@ -70,13 +69,22 @@ export default class Home extends Component {
                         masterUserItems: doc.data()['items'],
                         isLoading: false,
                     }) 
-                    console.log("data from db after component mount is: " , this.state.filteredUserItems);
                 } 
             })
         })
         .catch(error => {
             console.error('Couldnt get itmes', error)
-        })
+        })   
+    }
+
+    setFilteredItems = (filteredItems) => {
+        console.log("filtered items is: ", filteredItems);
+        this.setState({filteredUserItems: filteredItems});
+    }
+
+    setMasterItems = (masterItems) => {
+        console.log("master items is: ",masterItems);
+        this.setState({masterUserItems: masterItems});
     }
 
     componentDidMount () {
@@ -86,7 +94,6 @@ export default class Home extends Component {
     setModalVisible = (isModalVisible) => {
         this.setState({modalVisible: isModalVisible});
     }
-    
 
     searchFilterFunction = (text) => {
         // Check if searched text is not blank
@@ -122,10 +129,9 @@ export default class Home extends Component {
             <View>
                 <Header title="Home" rightHeader="Filter" leftHeader="Profile"/>       
                 <View style={bodyStyles.body}>
-                    <AddItemsModal  searchFilterFunction= {this.searchFilterFunction} modalVisible={this.state.modalVisible} setModalVisible ={this.setModalVisible} />
+                    <AddItemsModal setFilteredItems={this.setFilteredItems} setMasterItems={this.setMasterItems} isLoading={this.state.isLoading} searchFilterFunction= {this.searchFilterFunction} modalVisible={this.state.modalVisible} setModalVisible ={this.setModalVisible} filteredUserItems={this.state.filteredUserItems} masterUserItems={this.state.masterUserItems}/>
                     <Searchbar searchFilterFunction= {this.searchFilterFunction} search={this.state.search}/>
-                    <Items filteredUserItems={this.state.filteredUserItems} isLoading={this.state.isLoading}/>
-                    
+                    <Items filteredUserItems={this.state.filteredUserItems} masterUserItems={this.state.masterUserItems} setFilteredItems={this.setFilteredItems} setMasterItems={this.setMasterItems} isLoading={this.state.isLoading}/>          
                 </View>
                 {/* <GetItemsComponent/> */}
                 <Footer  modalVisible={this.state.modalVisible} setModalVisible ={this.setModalVisible}/>
