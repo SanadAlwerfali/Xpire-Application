@@ -1,8 +1,10 @@
-import React from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/core'
+import {React,  useEffect, useState } from 'react'
 
 export default function Welcome() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
         <View style={styles.body}>
@@ -15,10 +17,10 @@ export default function Welcome() {
                 <Text style={styles.footerText}>Welcome</Text>
             </View>
             <View style={styles.footerBottom}>
-                <TouchableOpacity style={styles.buttons}>
+                <TouchableOpacity onPress={() => navigation.navigate('Signup')} style={styles.buttons}>
                     <Text style={styles.buttonText}>Sign Up</Text>  
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttons}>
+                <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.buttons}>
                     <Text style={styles.buttonText}>Log In</Text>
                 </TouchableOpacity>
             </View> 
