@@ -6,6 +6,7 @@ import db from "../firebase";
 import firebase from 'firebase/compat/app';
 import auth from "../firebaseAuth";
 import { getAuth } from "firebase/auth";
+import { ScrollView } from "react-native";
 
 export default class Items extends Component{
     constructor(props){
@@ -84,7 +85,8 @@ export default class Items extends Component{
         return(
             <View style={itemsStyles.itemsContainer}>  
                 <Text style={itemsStyles.itemsHeader}>Items</Text>
-                <SafeAreaView style={itemsStyles.itemsBody}>
+                
+                    <ScrollView style={itemsStyles.itemsBody}>
                     <FlatList  
                         data={this.props.filteredUserItems}
                         keyExtractor={(item, index) => index.toString()}
@@ -109,7 +111,8 @@ export default class Items extends Component{
                             </View>
                         )}
                     />
-                </SafeAreaView>
+                    </ScrollView>
+                
                 
             </View>
         );

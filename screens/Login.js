@@ -42,7 +42,6 @@ const navigation = useNavigation();
           db.collection('users').doc(uid).set({
               name: name,
               image: picture,
-              items: []
           }).then(() => {
               navigation.navigate('Home');
           }).catch(error => alert("Please enter a valid email/password"));
@@ -62,32 +61,78 @@ const navigation = useNavigation();
   );
 
   useEffect(() => {
-    // checking if the response we recieved is a 'success'
-    if (response1?.type === 'success') {
-      const { id_token } = response1.params;
-      const authGoogle = getAuth();
 
-      // obtaining user's credentials to log in their account
-      const credential = GoogleAuthProvider.credential(id_token);
+    // setting up a firebase auth listener to check if the user is logged in
+    const unsubscribe = auth.onAuthStateChanged(user => {
+        if (user) {
+          console.log("user is logged in")
+          navigation.navigate('Home');
+        }
+        else{
+            // checking if the response we recieved is a 'success'
+            if (response1?.type === 'success') {
+                const { id_token } = response1.params;
+                const authGoogle = getAuth();
+        
+                // obtaining user's credentials to log in their account
+                const credential = GoogleAuthProvider.credential(id_token);
+        
+                // then we sign the user in using their credentials obtained from the previous step
+                signInWithCredential(authGoogle, credential).then(() => {
+                    
+                    // obtaining the needed data
+                    const name = authGoogle.currentUser.displayName;
+                    const picture = authGoogle.currentUser.photoURL;
+                    const uid = authGoogle.currentUser.uid;
+                    db.collection('users').doc(uid).get()
+                    .then(user => {
+                        if (user.exists){
+                            navigation.navigate('Home');
+                            console.log('user exists')
+                        }
+                        else{
+                            db.collection('users').doc(uid).update({
+                                name: name,
+                                image: picture,
+                                items: [],
+                            }).then(()=> {
+                                navigation.navigate('Home');
+                            }).catch(() => {
+                                alert("Please enter a valid email/password")
+                            })
+                        }
+                    })
+                })
+            }
+        }
 
-      // then we sign the user in using their credentials obtained from the previous step
-      signInWithCredential(authGoogle, credential).then(() => {
+      })
+      return unsubscribe
+    // // checking if the response we recieved is a 'success'
+    // if (response1?.type === 'success') {
+    //   const { id_token } = response1.params;
+    //   const authGoogle = getAuth();
+
+    //   // obtaining user's credentials to log in their account
+    //   const credential = GoogleAuthProvider.credential(id_token);
+
+    //   // then we sign the user in using their credentials obtained from the previous step
+    //   signInWithCredential(authGoogle, credential).then(() => {
           
-          // obtaining the needed data
-          const name = authGoogle.currentUser.displayName;
-          const picture = authGoogle.currentUser.photoURL;
-          const uid = authGoogle.currentUser.uid;
+    //       // obtaining the needed data
+    //       const name = authGoogle.currentUser.displayName;
+    //       const picture = authGoogle.currentUser.photoURL;
+    //       const uid = authGoogle.currentUser.uid;
 
-          // adding them to the database
-          db.collection('users').doc(uid).set({
-              name: name,
-              image: picture,
-              items: []
-          }).then(() => {
-              navigation.navigate('Home');
-          }).catch(error => alert("Please enter a valid email/password"));
-        })
-    }
+    //       // adding them to the database
+    //       db.collection('users').doc(uid).set({
+    //           name: name,
+    //           image: picture,
+    //       }).then(() => {
+    //           navigation.navigate('Home');
+    //       }).catch(error => alert("Please enter a valid email/password"));
+    //     })
+    // }
   }, [response1]);
   // =============== END GOOGLE ==================
 

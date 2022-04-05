@@ -15,19 +15,23 @@ export default StyleSheet.create({
     },
     itemsBody:{
         flexDirection: 'column',
-        height: '90%',
+        
+        //justifyContent: 'space-around',
     },
     item:{
+        flex: 6,
         flexDirection: 'row',
-        padding: '1%',
+        marginBottom: '5%',
         width: '100%',
-        height: '75%'
+        height: '100%',
+        
     },
     itemPicContainer:{
         width: '20%',
         height: '75%',
         alignItems: 'center',
         justifyContent: 'center',
+        
     },
     itemDetailsContainer:{
         width: '80%',
@@ -41,6 +45,7 @@ export default StyleSheet.create({
     itemDetailsHeaders:{
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginVertical: '5%'
     },
     itemDetailsFooter:{
         flexDirection: 'column',
@@ -54,7 +59,8 @@ export default StyleSheet.create({
     itemDaysLeft:{
         fontWeight: '400',
         fontSize: 12,
-        color: '#000000'
+        color: '#000000',
+        marginBottom: '1%'
     },
     itemDelete:{
         fontWeight: 'normal',
