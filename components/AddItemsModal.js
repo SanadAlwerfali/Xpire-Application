@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F2994A',
+        // backgroundColor: '#0000EE',
         borderRadius: 100,
         alignSelf: 'center',
         marginHorizontal: 5
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
         fontStyle: 'normal',
         fontWeight: 'bold',
         fontSize: 18,
-        color: '#FFFFFF',
+        color: '#EB5757',
         textAlign: 'center',
     },
     modalSubHeaders: {
