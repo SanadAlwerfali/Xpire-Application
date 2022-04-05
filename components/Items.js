@@ -71,7 +71,7 @@ export default class Items extends Component{
             progress = "0.5";
         }
         else if(remainingDays>=7) {
-            progress = "0.75";
+            progress = "1";
         }
         return progress;
     }
