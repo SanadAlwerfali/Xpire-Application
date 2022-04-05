@@ -8,11 +8,12 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         flexDirection: 'row',
-        marginTop: '5%',
+        paddingTop: '5%',
+        backgroundColor: '#EB5757'
     },
     headerText:{
         fontWeight: '600',
         fontSize: 30,
-        color: '#000000'
+        color: '#FFFFFF'
     },
 });

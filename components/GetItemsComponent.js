@@ -18,7 +18,6 @@ const GetItemsComponent = () => {
         })))
         .then (users => setUsers(users))
     }, [])
-    console.log("users value is " + JSON.stringify(users));
 
     return (
         <View >

@@ -66,7 +66,6 @@ const navigation = useNavigation();
     // setting up a firebase auth listener to check if the user is logged in
     const unsubscribe = auth.onAuthStateChanged(user => {
         if (user) {
-          console.log("user is logged in")
           navigation.navigate('Home');
         }
         else{
@@ -89,7 +88,6 @@ const navigation = useNavigation();
                     .then(user => {
                         if (user.exists){
                             navigation.navigate('Home');
-                            console.log('user exists')
                         }
                         else{
                             db.collection('users').doc(uid).update({
@@ -147,7 +145,6 @@ const navigation = useNavigation();
     // setting up a firebase auth listener to check if the user is logged in
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
-        console.log("user is logged in")
         navigation.navigate('Home');
       }
     })
@@ -159,7 +156,6 @@ const navigation = useNavigation();
     auth.signInWithEmailAndPassword(email, password)
     .then(userCredentials => {
         const user = userCredentials.user;
-        console.log('Logged in with:', user.email);
         navigation.navigate('Home');
     })    .catch(error => alert("Inavlid email or password"))
   }
@@ -277,7 +273,6 @@ authButtons: {
     },
     shadowOpacity: 0.2,
     shadowRadius: 5.00,
-    //elevation: 0,
 },
 
 buttonText: {
@@ -291,18 +286,14 @@ buttonText: {
 footerBottom: {
     width: '100%',
     height: '50%',
-    // position: 'relative',
-    //justifyContent: 'space-around',
-    // paddingTop: '20%',
     alignItems: 'center',
     flexDirection: 'column',
 
 },
 image:{
-    width: '100%',
-    height: '100%',
+    width: '85%',
+    height: '85%',
     borderRadius: 10,
-    flex: 1,
 },
 
 })

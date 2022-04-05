@@ -5,7 +5,7 @@ export default StyleSheet.create({
     hyperLink:{
         fontWeight: '500',
         fontSize: 16,
-        color: '#F2994A',
+        color: '#FFFFFF',
         paddingLeft: '5%',
         paddingRight: '5%',
     },

@@ -20,10 +20,8 @@ export default function Signup () {
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
           if (user) {
-            console.log("User is Signed in! as:", user.email);
           }
         })
-    
         return unsubscribe
     })
 
