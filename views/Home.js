@@ -134,7 +134,7 @@ export default class Home extends Component {
         }
         return(
             <View>
-                <Header title="Home" rightHeader="Filter" leftHeader="Profile"/>       
+                <Header title="Home" rightHeader="Logout" leftHeader="Profile"/>       
                 <View style={bodyStyles.body}>
                     <AddItemsModal setFilteredItems={this.setFilteredItems} setMasterItems={this.setMasterItems} isLoading={this.state.isLoading} searchFilterFunction= {this.searchFilterFunction} modalVisible={this.state.modalVisible} setModalVisible ={this.setModalVisible} filteredUserItems={this.state.filteredUserItems} masterUserItems={this.state.masterUserItems}/>
                     <Searchbar searchFilterFunction= {this.searchFilterFunction} search={this.state.search}/>

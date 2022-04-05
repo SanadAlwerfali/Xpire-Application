@@ -2,22 +2,37 @@ import React, {Component}from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import hyperlinkStyles from '../styles/hyperlinkStyles';
 import headerStyles from '../styles/headerStyles';
+import db from '../firebase';
+import auth from "../firebaseAuth";
+import { useNavigation } from '@react-navigation/core'
 
-export default class Header extends Component {
-    constructor(props){
-        super(props);
+
+export default function Header(props) {
+    
+    
+    const navigate = useNavigation();
+    const logout = () => {
+        auth.signOut().then(()=>{
+            alert("You have been successfully logged out!")
+            navigate.navigate('Welcome');
+         }).catch(() => {
+             alert("OhOh! something went wrong!")
+         })
     }
-    render () {
+
+    
+
+        
+
         return (
         <View style={headerStyles.header}>
-            <TouchableOpacity>
-                <Text style={hyperlinkStyles.hyperLink}>{this.props.leftHeader}</Text>
+            <TouchableOpacity onPress={() => navigate.navigate(props.leftHeader)}>
+                <Text style={hyperlinkStyles.hyperLink}>{props.leftHeader}</Text>
             </TouchableOpacity>
-            <Text style={headerStyles.headerText}>{this.props.title}</Text>
-            <TouchableOpacity>
-                <Text style={hyperlinkStyles.hyperLink}>{this.props.rightHeader}</Text>
+            <Text style={headerStyles.headerText}>{props.title}</Text>
+            <TouchableOpacity onPress = {() => logout()}>
+                <Text style={hyperlinkStyles.hyperLink}>{props.rightHeader}</Text>
             </TouchableOpacity>
         </View> 
         );
-    }
 }
