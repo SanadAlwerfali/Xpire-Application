@@ -38,14 +38,43 @@ export default class Items extends Component{
     getRemaningDays = (item) => {
         const dataTime = item.expiryDate;
         const dataTimeToDate = dataTime.toDate();
-        console.log("dataTime is: ", dataTime);
         var timenow = new Date();
         var timeStamp = new Date(dataTimeToDate);
         const remaningDays = Math.abs(timeStamp - timenow) / (1000 * 60 * 60 * 24);
         return Math.round(remaningDays);
     }
-    
 
+    getProgressColor = (item) => {
+        const remainingDays = this.getRemaningDays(item);
+        var color = "";
+        if (remainingDays<3){
+            color = "#EB5757";
+        }
+        else if (3<remainingDays && remainingDays<7){
+            color = "#F2994A";
+        }
+        else if(remainingDays>=7) {
+            color = "#219653";
+        }
+        return color;
+    } 
+
+    getProgressNumber = (item) => {
+        const remainingDays = this.getRemaningDays(item);
+        var progress = "";
+        if (remainingDays<3){
+            progress = "0.25";
+        }
+        else if (3<remainingDays && remainingDays<7){
+            console.log(remainingDays<7);
+            progress = "0.5";
+        }
+        else if(remainingDays>=7) {
+            progress = "0.75";
+        }
+        return progress;
+    }
+    
     render() {
         if(this.props.isLoading){
             return (
@@ -73,12 +102,8 @@ export default class Items extends Component{
                                         </TouchableOpacity>
                                     </View>
                                     <View style={itemsStyles.itemDetailsFooter}>
-                                        {item.expiryDate.seconds!= " " && 
                                         <Text style={itemsStyles.itemDaysLeft}>{this.getRemaningDays(item)} days left</Text>
-                                        
-                                        }
-                                        
-                                        <ProgressBar style={itemsStyles.itemStatus} progress={item.progress} color={item.progressColor} />                                
+                                        <ProgressBar style={itemsStyles.itemStatus} progress={this.getProgressNumber(item)} color={this.getProgressColor(item)} />                                
                                     </View>
                                 </View>   
                             </View>

@@ -71,8 +71,11 @@ export default class AddItemsModal extends Component{
       };
     
     handleConfirm = (date) => {
+        const dateTimeStamp = firebase.firestore.Timestamp.fromDate(date);
+        console.log("react native date", date);
+        console.log("date timestamp", dateTimeStamp);
         this.setState ({
-            itemexpiryDate: date
+            itemexpiryDate: dateTimeStamp
         });
         this.hideDatePicker();
     };
@@ -108,6 +111,11 @@ export default class AddItemsModal extends Component{
                 name: this.state.itemName
             })
             this.props.setModalVisible(false);
+            this.setState({
+                itemName: "",
+                itemImage: "",
+                itemexpiryDate: ""
+            })
         }
         else{
             console.warn('missing data');
