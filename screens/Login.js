@@ -8,6 +8,7 @@ import auth from "../firebaseAuth";
 import * as Facebook from 'expo-auth-session/providers/facebook';
 import { Platform } from 'react-native';
 import { ResponseType } from 'expo-auth-session';
+import itemsStyles from '../styles/itemsStyles';
 import { FacebookAuthProvider, getAuth, GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
 WebBrowser.maybeCompleteAuthSession();
 
@@ -115,14 +116,14 @@ const navigation = useNavigation();
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
         navigation.navigate('Home');
-    })    .catch(error => alert("Somethings Wrong"))
+    })    .catch(error => alert("Inavlid email or password"))
   }
   // =============== END EMAIL/PASS ==================
 
 
   return (
-
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <View style={styles.container}>
+    <KeyboardAvoidingView style={styles.keyAvoidingViewContainer} behavior="padding">
 
         <View style={styles.body}>
             <View>
@@ -144,21 +145,27 @@ const navigation = useNavigation();
                 style={styles.input}
                 secureTextEntry
             />
-        </View>
-
-        <View style={styles.footerBottom}>
             <TouchableOpacity onPress = {handleLogin} style={styles.button}>
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity onPress = {() => {facebookLogIn();}} style={styles.button}>
-                <Text style={styles.buttonText}>Facebook</Text>
-            </TouchableOpacity> */}
-            <TouchableOpacity onPress = {() => {googleLogIn();}} style={styles.button}>
-                <Text style={styles.buttonText}>Google</Text>
-            </TouchableOpacity>
         </View>
-    </KeyboardAvoidingView>
 
+        
+    </KeyboardAvoidingView>
+    <View style={styles.footerBottom}>
+            
+            <TouchableOpacity onPress = {() => {googleLogIn();}} style={styles.authButtons}>
+                <Image style ={styles.image} source={require("../assets/googleSignIn.png")}/>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.authButtons}>
+                <Image style ={styles.image} source={require("../assets/appleSignIn.png")}/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress = {() => {facebookLogIn();}} style={styles.authButtons}>
+                <Image style ={styles.image} source={require("../assets/facebookSignIn.png")}/>
+            </TouchableOpacity>
+            
+        </View>
+    </View>
 )
 }
 
@@ -167,13 +174,31 @@ const navigation = useNavigation();
 const styles = StyleSheet.create({
 container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: 'white',
+},
+keyAvoidingViewContainer:{
+    height: '40%',
+    //justifyContent: 'center',
+    marginTop: '10%',
     alignItems: 'center',
     backgroundColor: 'white',
+    flexDirection: 'column'
+},
+body: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    height: '10%'
+},
+topText: {
+    fontStyle: 'normal',
+    fontWeight: 'bold',
+    fontSize: 30,
+    lineHeight: 30,
+    textAlign: 'center',
 },
 inputContainer: {
     width: '80%',
-    //height: '20%'
+    height: '30%'
 },
 input: {
     backgroundColor: '#F6F6F6',
@@ -183,25 +208,31 @@ input: {
     marginTop: 15,
     height: 60,
 },
-buttonContainer: {
-    width: '85%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 60,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F2994A',
-    borderRadius: 100,
-},
 button: {
-    width: '85%',
-    height: '15%',
+    width: '100%',
+    height: '55%',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F2994A',
     borderRadius: 100,
+    marginVertical: "5%",
+},
+authButtons: {
+    width: '85%',
+    height: '13%',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: "5%",
+    shadowColor: "#000",
+    shadowOffset: {
+    width: 0,
+    height: 12,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.00,
+    //elevation: 0,
 },
 
 buttonText: {
@@ -215,28 +246,18 @@ buttonText: {
 footerBottom: {
     width: '100%',
     height: '50%',
-    position: 'relative',
-    justifyContent: 'space-evenly',
-    paddingTop: '20%',
-    alignItems: 'flex-end',
-    flexDirection: 'row',
+    // position: 'relative',
+    //justifyContent: 'space-around',
+    // paddingTop: '20%',
+    alignItems: 'center',
+    flexDirection: 'column',
 
 },
-footerTop: {
+image:{
     width: '100%',
-    height: '30%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: '100%',
+    borderRadius: 10,
+    flex: 1,
 },
-topText: {
-    fontStyle: 'normal',
-    fontWeight: 'bold',
-    fontSize: 30,
-    lineHeight: 36,
-    textAlign: 'center',
-},
-body: {
-    alignItems: 'center',
-    flexDirection: 'row',
-},
+
 })
