@@ -52,7 +52,7 @@ export default class AddItemsModal extends Component{
         console.log(result);
 
         if (!result.cancelled) {
-        setPickedImagePath(result.uri);
+            this.setState({ itemImage : result.uri});
         console.log(result.uri);
         }
     }
