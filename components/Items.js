@@ -86,8 +86,8 @@ export default class Items extends Component{
             <View style={itemsStyles.itemsContainer}>  
                 <Text style={itemsStyles.itemsHeader}>Items</Text>
                 
-                    <ScrollView style={itemsStyles.itemsBody}>
-                    <FlatList  
+                    
+                    <FlatList  style={itemsStyles.itemsBody}
                         data={this.props.filteredUserItems}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({item}) => (
@@ -111,7 +111,7 @@ export default class Items extends Component{
                             </View>
                         )}
                     />
-                    </ScrollView>
+                    
                 
                 
             </View>

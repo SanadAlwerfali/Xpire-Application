@@ -2,13 +2,16 @@
 import { getAuth } from 'firebase/auth';
 import React from 'react';
 import { render } from 'react-dom';
-import {View, SafeAreaView, StyleSheet} from 'react-native';
+import {View, SafeAreaView, StyleSheet,TouchableOpacity, Alert } from 'react-native';
 import { Avatar, Title, Caption, Text, TouchableRipple} from 'react-native-paper';
 import db from '../firebase';
 import auth from "../firebaseAuth";
 import { Component } from "react";
 import Header from '../components/Header';
 import bodyStyles from "../styles/bodyStyles";
+import { useNavigation } from '@react-navigation/core';
+import { Firestore } from 'firebase/firestore';
+import firebase from 'firebase/compat/app';
 
 
 export default class Profile extends Component {
@@ -23,6 +26,7 @@ export default class Profile extends Component {
     }
 
     uid = getAuth().currentUser.uid;
+    
     getUserInformation = () => {
         db.collection('users')
         .get()
@@ -43,6 +47,43 @@ export default class Profile extends Component {
         .catch(error => {
             console.error('Couldnt get itmes', error)
         })   
+    }
+    
+    deleteAllItems = async (uid) => {
+        const accountRef = db.collection('users').doc(uid);
+        // Remove the 'items' field from the document
+        const res = await accountRef.update({
+        items: firebase.firestore.FieldValue.delete()
+        }).then(() => {
+            console.log('items have been deleted')
+            this.props.navigation.navigate('Home');
+        })
+        .catch((error) => console.log(error));        
+    }
+
+    deleteAccount = async (uid) => {
+        const res = await db.collection('users').doc(uid).delete();
+        this.props.navigation.navigate('Welcome');
+    }
+
+    confirmItemsDeletion = (uid) => {
+        Alert.alert('Delete My Items', 'You are about to delete all your items, would you like to continue?', [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+            },
+            { text: 'OK', onPress: () => this.deleteAllItems(uid)},
+          ]);
+    }
+
+    confirmAccountDeletion = (uid) => {
+        Alert.alert('Delete Account', 'We are sad to see you go! would you like to continue?', [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+            },
+            { text: 'OK', onPress: () => this.deleteAccount(uid)},
+          ]);
     }
 
     componentDidMount () {
@@ -69,12 +110,15 @@ export default class Profile extends Component {
                 size={90}
                 />
             </View>
-            <View style={styles.profileMainBody}>
-                <Text>Delete Account</Text>
-                <Text>Delete All Items</Text>
-            </View>
         </View>
-        {/* <Footer  modalVisible={this.state.modalVisible} setModalVisible ={this.setModalVisible}/>       */}
+        <View>
+        <TouchableOpacity onPress = {() => this.confirmAccountDeletion(this.uid)}>
+                    <Text style={styles.buttonText}>Delete Account</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress = {() => this.confirmItemsDeletion(this.uid)}>
+                    <Text style={styles.buttonText}>Delete All Items</Text>
+            </TouchableOpacity>
+        </View>
     </View>
     
     );
