@@ -1,4 +1,3 @@
-
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
@@ -19,6 +18,4 @@ firebase.initializeApp(configuration);
 var db = firebase.firestore();
 var auth = firebase.auth();
 
-export default db;
-
-
+export default auth;

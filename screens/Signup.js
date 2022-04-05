@@ -2,7 +2,9 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, KeyboardAvo
 import { NavigationContainer } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/core'
 import { React, useEffect, useState } from 'react'
-import {db, auth} from '../firebase';
+import db from '../firebase';
+import auth from "../firebaseAuth";
+
 import * as Google from 'expo-auth-session/providers/google';
 
 
@@ -34,6 +36,7 @@ export default function Signup () {
             db.collection('users').doc(uid).set({
                 name: name,
                 email: email,
+                items: []
             }).then(() => {
                 navigation.navigate('Home');
             }).catch(error => alert(error.message))

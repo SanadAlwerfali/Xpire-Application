@@ -3,12 +3,12 @@ import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { useNavigation } from '@react-navigation/core'
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Button } from 'react-native'
-import {db, auth} from '../firebase';
+import db from '../firebase';
+import auth from "../firebaseAuth";
 import * as Facebook from 'expo-auth-session/providers/facebook';
 import { Platform } from 'react-native';
 import { ResponseType } from 'expo-auth-session';
 import { FacebookAuthProvider, getAuth, GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
-
 WebBrowser.maybeCompleteAuthSession();
 
 
@@ -61,31 +61,78 @@ const navigation = useNavigation();
   );
 
   useEffect(() => {
-    // checking if the response we recieved is a 'success'
-    if (response1?.type === 'success') {
-      const { id_token } = response1.params;
-      const authGoogle = getAuth();
 
-      // obtaining user's credentials to log in their account
-      const credential = GoogleAuthProvider.credential(id_token);
+    // setting up a firebase auth listener to check if the user is logged in
+    const unsubscribe = auth.onAuthStateChanged(user => {
+        if (user) {
+          console.log("user is logged in")
+          navigation.navigate('Home');
+        }
+        else{
+            // checking if the response we recieved is a 'success'
+            if (response1?.type === 'success') {
+                const { id_token } = response1.params;
+                const authGoogle = getAuth();
+        
+                // obtaining user's credentials to log in their account
+                const credential = GoogleAuthProvider.credential(id_token);
+        
+                // then we sign the user in using their credentials obtained from the previous step
+                signInWithCredential(authGoogle, credential).then(() => {
+                    
+                    // obtaining the needed data
+                    const name = authGoogle.currentUser.displayName;
+                    const picture = authGoogle.currentUser.photoURL;
+                    const uid = authGoogle.currentUser.uid;
+                    db.collection('users').doc(uid).get()
+                    .then(user => {
+                        if (user.exists){
+                            navigation.navigate('Home');
+                            console.log('user exists')
+                        }
+                        else{
+                            db.collection('users').doc(uid).update({
+                                name: name,
+                                image: picture,
+                                items: [],
+                            }).then(()=> {
+                                navigation.navigate('Home');
+                            }).catch(() => {
+                                alert("Please enter a valid email/password")
+                            })
+                        }
+                    })
+                })
+            }
+        }
 
-      // then we sign the user in using their credentials obtained from the previous step
-      signInWithCredential(authGoogle, credential).then(() => {
+      })
+      return unsubscribe
+    // // checking if the response we recieved is a 'success'
+    // if (response1?.type === 'success') {
+    //   const { id_token } = response1.params;
+    //   const authGoogle = getAuth();
+
+    //   // obtaining user's credentials to log in their account
+    //   const credential = GoogleAuthProvider.credential(id_token);
+
+    //   // then we sign the user in using their credentials obtained from the previous step
+    //   signInWithCredential(authGoogle, credential).then(() => {
           
-          // obtaining the needed data
-          const name = authGoogle.currentUser.displayName;
-          const picture = authGoogle.currentUser.photoURL;
-          const uid = authGoogle.currentUser.uid;
+    //       // obtaining the needed data
+    //       const name = authGoogle.currentUser.displayName;
+    //       const picture = authGoogle.currentUser.photoURL;
+    //       const uid = authGoogle.currentUser.uid;
 
-          // adding them to the database
-          db.collection('users').doc(uid).set({
-              name: name,
-              image: picture,
-          }).then(() => {
-              navigation.navigate('Home');
-          }).catch(error => alert("Please enter a valid email/password"));
-        })
-    }
+    //       // adding them to the database
+    //       db.collection('users').doc(uid).set({
+    //           name: name,
+    //           image: picture,
+    //       }).then(() => {
+    //           navigation.navigate('Home');
+    //       }).catch(error => alert("Please enter a valid email/password"));
+    //     })
+    // }
   }, [response1]);
   // =============== END GOOGLE ==================
 
@@ -100,6 +147,7 @@ const navigation = useNavigation();
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
         console.log("user is logged in")
+        navigation.navigate('Home');
       }
     })
     return unsubscribe
@@ -112,7 +160,7 @@ const navigation = useNavigation();
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
         navigation.navigate('Home');
-    })    .catch(error => alert("Please enter a valid email/password"))
+    })    .catch(error => alert("Somethings Wrong"))
   }
   // =============== END EMAIL/PASS ==================
 
@@ -147,9 +195,9 @@ const navigation = useNavigation();
             <TouchableOpacity onPress = {handleLogin} style={styles.button}>
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress = {() => {facebookLogIn();}} style={styles.button}>
+            {/* <TouchableOpacity onPress = {() => {facebookLogIn();}} style={styles.button}>
                 <Text style={styles.buttonText}>Facebook</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity onPress = {() => {googleLogIn();}} style={styles.button}>
                 <Text style={styles.buttonText}>Google</Text>
             </TouchableOpacity>
