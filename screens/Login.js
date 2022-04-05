@@ -3,12 +3,12 @@ import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { useNavigation } from '@react-navigation/core'
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Button } from 'react-native'
-import {db, auth} from '../firebase';
+import db from '../firebase';
+import auth from "../firebaseAuth";
 import * as Facebook from 'expo-auth-session/providers/facebook';
 import { Platform } from 'react-native';
 import { ResponseType } from 'expo-auth-session';
 import { FacebookAuthProvider, getAuth, GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
-
 WebBrowser.maybeCompleteAuthSession();
 
 
@@ -42,6 +42,7 @@ const navigation = useNavigation();
           db.collection('users').doc(uid).set({
               name: name,
               image: picture,
+              items: []
           }).then(() => {
               navigation.navigate('Home');
           }).catch(error => alert("Please enter a valid email/password"));
@@ -81,6 +82,7 @@ const navigation = useNavigation();
           db.collection('users').doc(uid).set({
               name: name,
               image: picture,
+              items: []
           }).then(() => {
               navigation.navigate('Home');
           }).catch(error => alert("Please enter a valid email/password"));
@@ -100,6 +102,7 @@ const navigation = useNavigation();
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
         console.log("user is logged in")
+        navigation.navigate('Home');
       }
     })
     return unsubscribe
@@ -112,7 +115,7 @@ const navigation = useNavigation();
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
         navigation.navigate('Home');
-    })    .catch(error => alert("Please enter a valid email/password"))
+    })    .catch(error => alert("Somethings Wrong"))
   }
   // =============== END EMAIL/PASS ==================
 
@@ -147,9 +150,9 @@ const navigation = useNavigation();
             <TouchableOpacity onPress = {handleLogin} style={styles.button}>
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress = {() => {facebookLogIn();}} style={styles.button}>
+            {/* <TouchableOpacity onPress = {() => {facebookLogIn();}} style={styles.button}>
                 <Text style={styles.buttonText}>Facebook</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity onPress = {() => {googleLogIn();}} style={styles.button}>
                 <Text style={styles.buttonText}>Google</Text>
             </TouchableOpacity>

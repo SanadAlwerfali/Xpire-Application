@@ -4,7 +4,8 @@ import { ProgressBar, Colors } from 'react-native-paper';
 import itemsStyles from "../styles/itemsStyles";
 import db from "../firebase";
 import firebase from 'firebase/compat/app';
-
+import auth from "../firebaseAuth";
+import { getAuth } from "firebase/auth";
 
 export default class Items extends Component{
     constructor(props){
@@ -16,10 +17,11 @@ export default class Items extends Component{
         //     isLoading: true
         // }
     }
-    
+    uid = getAuth().currentUser.uid;
+
     deleteItem = (item) => {
         db.collection('users')
-        .doc("sW6JJvJ7Pq7sEnLKaCE1")
+        .doc(this.uid)
         .update({
             items: firebase.firestore.FieldValue.arrayRemove(item),
         })

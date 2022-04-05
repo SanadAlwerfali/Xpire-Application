@@ -8,6 +8,8 @@ import * as ImagePicker from 'expo-image-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import firebase from 'firebase/compat/app';
 import db from "../firebase";
+import auth from "../firebaseAuth";
+import { getAuth } from "firebase/auth";
 
 export default class AddItemsModal extends Component{
     constructor(props){
@@ -80,10 +82,11 @@ export default class AddItemsModal extends Component{
             datePickerModalVisible: true
         });
     } 
+    uid = getAuth().currentUser.uid;
 
     addItemsToDb = (itemData) => {
         db.collection('users')
-        .doc("sW6JJvJ7Pq7sEnLKaCE1")
+        .doc(this.uid)
         .update({
             items: firebase.firestore.FieldValue.arrayUnion({
                 expiryDate: itemData.expiryDate,

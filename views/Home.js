@@ -2,8 +2,9 @@ import React, {Component, useEffect} from "react";
 
 import { View, StyleSheet, Text} from "react-native";
 import AddItemsModal from "../components/AddItemsModal";
-
+import * as firebase from "firebase/firestore";
 import db from "../firebase";
+import auth from "../firebaseAuth";
 import { doc } from "firebase/firestore";
 import Header from "../components/Header"
 import GetItemsComponent from "../components/GetItemsComponent"
@@ -12,6 +13,7 @@ import Searchbar from "../components/Searchbar";
 import Footer from "../components/Footer";
 import bodyStyles from "../styles/bodyStyles";
 import { getItems } from "../src/api/ItemsApi";
+import { getAuth } from "firebase/auth";
 
 export default class Home extends Component {
 
@@ -57,13 +59,17 @@ export default class Home extends Component {
         }
     }
 
+    uid = getAuth().currentUser.uid;
+    
     updateUserItems = () => {
         db.collection('users')
         .get()
         .then(result => result.docs)
         .then((docs) => {
             docs.forEach((doc) => {
-                if(doc.id == "sW6JJvJ7Pq7sEnLKaCE1"){
+                
+                if(doc.id == this.uid){
+                    console.log('here2');
                     this.setState ({
                         filteredUserItems: doc.data()['items'],
                         masterUserItems: doc.data()['items'],
@@ -77,6 +83,11 @@ export default class Home extends Component {
         })   
     }
 
+    componentDidMount () {
+        this.updateUserItems();
+        console.log(this.uid);
+    }
+
     setFilteredItems = (filteredItems) => {
         console.log("filtered items is: ", filteredItems);
         this.setState({filteredUserItems: filteredItems});
@@ -85,10 +96,6 @@ export default class Home extends Component {
     setMasterItems = (masterItems) => {
         console.log("master items is: ",masterItems);
         this.setState({masterUserItems: masterItems});
-    }
-
-    componentDidMount () {
-        this.updateUserItems();
     }
     
     setModalVisible = (isModalVisible) => {
