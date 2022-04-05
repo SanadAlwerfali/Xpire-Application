@@ -11,12 +11,6 @@ import { ScrollView } from "react-native";
 export default class Items extends Component{
     constructor(props){
         super (props);
-        // this.docs = db.collection('users');
-        // this.state = {
-        //     filteredUserItems: [],
-        //     masterUserItems: [],
-        //     isLoading: true
-        // }
     }
     uid = getAuth().currentUser.uid;
 
@@ -67,7 +61,6 @@ export default class Items extends Component{
             progress = "0.25";
         }
         else if (3<remainingDays && remainingDays<7){
-            console.log(remainingDays<7);
             progress = "0.5";
         }
         else if(remainingDays>=7) {
@@ -85,9 +78,8 @@ export default class Items extends Component{
         return(
             <View style={itemsStyles.itemsContainer}>  
                 <Text style={itemsStyles.itemsHeader}>Items</Text>
-                
                     
-                    <FlatList  style={itemsStyles.itemsBody}
+                    <FlatList  
                         data={this.props.filteredUserItems}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({item}) => (
@@ -110,9 +102,7 @@ export default class Items extends Component{
                                 </View>   
                             </View>
                         )}
-                    />
-                    
-                
+                    />                
                 
             </View>
         );

@@ -18,6 +18,7 @@ export default class AddItemsModal extends Component{
             itemName: "",
             itemImage: "",
             itemexpiryDate: "",
+            displayDate: "",
             datePickerModalVisible: false,
         }
     }
@@ -49,11 +50,9 @@ export default class AddItemsModal extends Component{
         const result = await ImagePicker.launchCameraAsync();
 
         // Explore the result
-        console.log(result);
 
         if (!result.cancelled) {
             this.setState({ itemImage : result.uri});
-        console.log(result.uri);
         }
     }
 
@@ -61,7 +60,7 @@ export default class AddItemsModal extends Component{
         this.setState({itemImage: ""});
     }
     deleteDate = () => {
-        this.setState({date: ""});
+        this.setState({displayDate: "", itemexpiryDate: ""});
     }
     
     hideDatePicker = () => {
@@ -72,13 +71,29 @@ export default class AddItemsModal extends Component{
     
     handleConfirm = (date) => {
         const dateTimeStamp = firebase.firestore.Timestamp.fromDate(date);
-        console.log("react native date", date);
-        console.log("date timestamp", dateTimeStamp);
         this.setState ({
-            itemexpiryDate: dateTimeStamp
+            itemexpiryDate: dateTimeStamp,
+            displayDate: date
         });
         this.hideDatePicker();
     };
+
+    getParsedDate(strDate){
+        var date = "";
+        // alert(date);
+        var dd = strDate.getDate();
+        var mm = strDate.getMonth() + 1; //January is 0!
+    
+        var yyyy = strDate.getFullYear();
+        if (dd < 10) {
+            dd = '0' + dd;
+        }
+        if (mm < 10) {
+            mm = '0' + mm;
+        }
+        date =  dd + "-" + mm + "-" + yyyy;
+        return date.toString();
+    }
     
     toggleDateView = () => {
         this.setState ({
@@ -100,7 +115,6 @@ export default class AddItemsModal extends Component{
         this.props.setFilteredItems([...this.props.filteredUserItems, itemData]);
         this.props.setMasterItems([...this.props.masterUserItems, itemData]);
         
-        console.log("filtered data fter push: ", this.props.filteredUserItems);
     }
     
     handleSubmit = () => {
@@ -126,41 +140,53 @@ export default class AddItemsModal extends Component{
         let requestImgView;
         let dateView;
         if (this.state.itemImage == "") {
-            requestImgView = <View style={styles.imagePickerButtons}>
-                        <TouchableOpacity style={styles.buttons} onPress={this.pickImageFromGallery}>
-                            <Text style={styles.buttonText}>Gallery</Text>  
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttons} onPress={this.pickImageFromCamera}>
-                            <Text style={styles.buttonText}>Camera Roll</Text>  
-                        </TouchableOpacity>
+            requestImgView = <View style={styles.imagePickerContainer}>
+                        <Text style={styles.modalSubHeaders}>Add Picture</Text>
+                        <View style={styles.imagePickerButtons}>
+                            <TouchableOpacity  onPress={this.pickImageFromGallery}>
+                                <Text style={styles.selectorButtons} onPress={this.pickImageFromGallery}>Gallery</Text>  
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={this.pickImageFromCamera}>
+                                <Text style={styles.selectorButtons}>Camera Roll</Text>  
+                            </TouchableOpacity>
+                        </View>
                     </View>
           } else {
-            requestImgView = <View style={styles.imagePickerButtons}>
-                            <Image style={styles.image} source={{uri: this.state.itemImage}} />
-                            <TouchableOpacity style={styles.buttons} onPress={this.pickImageFromGallery}>
-                                <Text style={styles.buttonText}>Replace Image</Text>  
-                            </TouchableOpacity> 
-                            <TouchableOpacity style={styles.buttons} onPress={this.deleteImage}>
-                                <Text style={styles.buttonText}>Delete Image</Text>  
-                            </TouchableOpacity> 
-                         </View>
+            requestImgView = <View style={styles.imagePickerContainer}>
+                                <Text style={styles.modalSubHeaders}>Add Picture</Text>    
+                                <View style={styles.imagePickerButtons}>
+                                    <Image style={styles.image} source={{uri: this.state.itemImage}} />
+                                    <TouchableOpacity onPress={this.pickImageFromGallery}>
+                                        <Text style={styles.selectorButtons}>Replace Image</Text>  
+                                    </TouchableOpacity> 
+                                    <TouchableOpacity onPress={this.deleteImage}>
+                                        <Text style={styles.selectorButtons}>Delete Image</Text>  
+                                    </TouchableOpacity> 
+                                </View>
+                            </View>
           }
           if (this.state.itemexpiryDate == "") {
 
-            dateView =  <View style={styles.imagePickerButtons}>
-                            <TouchableOpacity style={styles.buttons} onPress={this.toggleDateView}>
-                                <Text style={styles.buttonText}>Select Date</Text>  
-                            </TouchableOpacity>
+            dateView =  <View style={styles.imagePickerContainer}>
+                            <Text style={styles.modalSubHeaders}>Add Date</Text>
+                            <View style={styles.imagePickerButtons}>
+                                <TouchableOpacity onPress={this.toggleDateView}>
+                                    <Text style={styles.selectorButtons}>Select Date</Text>  
+                                </TouchableOpacity>
+                            </View>
                         </View>
           } else {
-            dateView = <View style={styles.imagePickerButtons}>
-                            <Text > Value:{this.state.itemexpiryDate.toString()}</Text>
-                            <TouchableOpacity style={styles.buttons} onPress={this.toggleDateView}>
-                                <Text style={styles.buttonText}>Replace Date</Text>  
-                            </TouchableOpacity> 
-                            <TouchableOpacity style={styles.buttons} onPress={this.deleteDate}>
-                                <Text style={styles.buttonText}>Delete Date</Text>  
-                            </TouchableOpacity> 
+            dateView = <View style={styles.imagePickerContainer}>
+                            <Text style={styles.modalSubHeaders}>Add Date</Text>
+                            <View style={styles.imagePickerButtons}>
+                                <Text style={styles.displayDateString}> {this.getParsedDate(this.state.displayDate)}</Text>
+                                <TouchableOpacity onPress={this.toggleDateView}>
+                                    <Text style={styles.selectorButtons}>Replace Date</Text>  
+                                </TouchableOpacity> 
+                                <TouchableOpacity onPress={this.deleteDate}>
+                                    <Text style={styles.selectorButtons}>Delete Date</Text>  
+                                </TouchableOpacity> 
+                            </View>
                         </View>
           }
           
@@ -201,55 +227,7 @@ export default class AddItemsModal extends Component{
                             <TouchableOpacity style={styles.buttons} onPress={this.handleSubmit} >
                                 <Text style={styles.buttonText}>Submit</Text>  
                             </TouchableOpacity>
-                            {/* <Formik
-                                initialValues={{name: '', image:'', expiryDate: ''}}
-                                onSubmit={(itemData) => 
-                                    addItemsToDb(
-                                        {name: itemData.name, 
-                                        image: itemData.image, 
-                                        expiryDate: itemData.expiryDate
-                                        })
-                                }
-                            >
-                            {(formikProps) => (
-                                <View>
-                                    <TextInput
-                                        style={styles.inputs}
-                                        placeholder="Product Name"
-                                        selectionColor="#F2994A"
-                                        onChangeText={formikProps.handleChange('name')}
-                                        value={formikProps.values.name}
-                                    />
-                                    {requestImgView}
-                                    {false &&
-                                        <TextInput
-                                        placeholder="Image file Value"
-                                        value={formikProps.values.image = this.pickImageFromGallery()}
-                                        />
-                                    }
-                                    {dateView}
-                                    {false &&
-                                        <TextInput
-                                        placeholder="Date value"
-                                        value={formikProps.values.expiryDate = this.state.date}
-                                        />
-                                    }
-                                    <DateTimePickerModal
-                                        isVisible={this.state.datePickerModalVisible}
-                                        mode="date"
-                                        display='inline'
-                                        onConfirm={this.handleConfirm}
-                                        onCancel={this.hideDatePicker}
-                                        isDarkModeEnabled={true}
-                                    />
-                                    
-                                    <TouchableOpacity style={styles.buttons} onPress={formikProps.handleSubmit}>
-                                        <Text style={styles.buttonText}>Submit</Text>  
-                                    </TouchableOpacity>
-                                </View>  
-                            )}
-
-                            </Formik> */}
+                            
                         </View>
                     </View>
                 </Modal>
@@ -364,6 +342,16 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         textAlign: 'center',
     },
+    modalSubHeaders: {
+        alignSelf: 'center',
+        marginBottom: '5%',
+        fontWeight: '500',
+        fontSize: 19,
+        color: '#000000',
+    },
+    imagePickerContainer: {
+        height: '30%'
+    },
     imagePickerButtons: {
         flexDirection: 'row',
         alignContent: 'center',
@@ -386,5 +374,15 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
         width: '100%',
         height: '25%',
+    },
+    selectorButtons:{
+        fontWeight: '500',
+        fontSize: 16,
+        color: '#0000EE',
+        paddingHorizontal: '3%',
+        alignSelf: 'center'
+    },
+    displayDateString:{
+        marginLeft: '3%',
     }
 }); 
