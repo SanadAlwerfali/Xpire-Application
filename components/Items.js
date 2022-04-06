@@ -1,19 +1,21 @@
 import React, { Component } from "react";
-import { Button, View, Text, SafeAreaView, FlatList, Image, TouchableOpacity } from "react-native";
-import { ProgressBar, Colors } from 'react-native-paper';
+import {  View, Text, FlatList, Image, TouchableOpacity } from "react-native";
+import { ProgressBar } from 'react-native-paper';
 import itemsStyles from "../styles/itemsStyles";
 import db from "../firebase";
 import firebase from 'firebase/compat/app';
-import auth from "../firebaseAuth";
 import { getAuth } from "firebase/auth";
-import { ScrollView } from "react-native";
 
 export default class Items extends Component{
+
+    //adding a constructor to get props from parent components
     constructor(props){
         super (props);
     }
-    uid = getAuth().currentUser.uid;
 
+    uid = getAuth().currentUser.uid; //getting Unique ID of user to use this to get items of that specific user
+
+    //function that takes in an item as a parameter and searches for the item in the and deltes it from the database. Also removed it from the filtered and mastered array states.
     deleteItem = (item) => {
         db.collection('users')
         .doc(this.uid)
@@ -30,6 +32,7 @@ export default class Items extends Component{
         this.props.setMasterItems(tempMastArray);        
     }
 
+    //function that gets how many days are left for an item to expire
     getRemaningDays = (item) => {
         const dataTime = item.expiryDate;
         const dataTimeToDate = dataTime.toDate();
@@ -39,6 +42,7 @@ export default class Items extends Component{
         return Math.round(remaningDays);
     }
 
+    //function that get the color of the progress bar for an item
     getProgressColor = (item) => {
         const remainingDays = this.getRemaningDays(item);
         var color = "";
@@ -54,6 +58,7 @@ export default class Items extends Component{
         return color;
     } 
 
+    //function that get the numer of the progress bar for an item
     getProgressNumber = (item) => {
         const remainingDays = this.getRemaningDays(item);
         var progress = "";
@@ -70,7 +75,7 @@ export default class Items extends Component{
     }
     
     render() {
-        if(this.props.isLoading){
+        if(this.props.isLoading){ //check if data has been successfully fetched from database before returning the main View.
             return (
                 <View><Text>Loading</Text></View>
             )

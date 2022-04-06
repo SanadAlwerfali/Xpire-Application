@@ -1,8 +1,7 @@
-import React, {Component}from 'react';
+import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import hyperlinkStyles from '../styles/hyperlinkStyles';
 import headerStyles from '../styles/headerStyles';
-import db from '../firebase';
 import auth from "../firebaseAuth";
 import { useNavigation } from '@react-navigation/core'
 
@@ -10,7 +9,9 @@ import { useNavigation } from '@react-navigation/core'
 export default function Header(props) {
     
     
-    const navigate = useNavigation();
+    const navigate = useNavigation(); //creating a navigate variable that will be used for the logout to to navigate the user to a different screen.
+
+    //logs out the user
     const logout = () => {
         auth.signOut().then(()=>{
             alert("You have been successfully logged out!")
@@ -19,7 +20,9 @@ export default function Header(props) {
              alert("OhOh! something went wrong!")
          })
     }
-    if (props.title == "Home"){
+
+    //return headers with different texts based on which screen is rendering them
+    if (props.title == "Home"){ 
         return (
             <View style={headerStyles.header}>
                 <TouchableOpacity onPress={() => navigate.navigate(props.leftHeader)}>

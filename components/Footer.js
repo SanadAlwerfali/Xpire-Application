@@ -5,10 +5,13 @@ import {MaterialIcons } from '@expo/vector-icons';
 
 
 export default class Footer extends Component {
+    //adding a constructor to get props from parent components
     constructor(props){
         super(props);
     }
     render () {
+        
+        //return fotters with different texts based on which screen is rendering them
         if (this.props.location == "Home"){
             return (
                 <View style={footerStyles.footer}>
