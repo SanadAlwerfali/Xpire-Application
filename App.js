@@ -7,11 +7,13 @@ import Signup from './views/Signup';
 import Login from './views/Login';
 import Home from './views/Home';
 import Profile from './views/Profile';
+import { LogBox } from 'react-native';
 
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  LogBox.ignoreAllLogs(true);
   return (
     //using a stack navigator to navigate the user between different views
     <NavigationContainer>

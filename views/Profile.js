@@ -133,16 +133,13 @@ export default class Profile extends Component {
             </View>
             <LineChart
                 data={{
-                labels: ["January", "February", "March", "April", "May", "June"],
+                labels: ["March","April"],
                 datasets: [
                     {
                     data: [
-                        Math.random() * 10,
-                        Math.random() * 10,
-                        Math.random() * 10,
-                        Math.random() * 10,
-                        Math.random() * 10,
-                        Math.random() * 10
+                        3,
+                        2,
+                        
                     ]
                     }
                 ]
