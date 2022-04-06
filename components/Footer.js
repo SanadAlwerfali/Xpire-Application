@@ -24,21 +24,15 @@ export default class Footer extends Component {
                 </View>
             );
         }
-        else if (this.props.location == "Welcome"){
+        else if (this.props.location == "Profile"){
             return(
-                <View style={styles.footer}>
-                    <View style={styles.footerTop}>
-                        <Text style={styles.footerText}>Welcome</Text>
-                    </View>
-                    <View style={styles.footerBottom}>
-                        <TouchableOpacity style={styles.buttons}>
-                            <Text style={styles.buttonText}>Sign Up</Text>  
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttons}>
-                            <Text style={styles.buttonText}>Log In</Text>
-                        </TouchableOpacity>
-                    </View> 
-                </View> 
+                <View style={footerStyles.footer}>
+                    <TouchableOpacity>
+                        <View>
+                            
+                        </View>
+                    </TouchableOpacity>        
+                </View>
             );
         }
     }

@@ -19,20 +19,47 @@ export default function Header(props) {
              alert("OhOh! something went wrong!")
          })
     }
+    if (props.title == "Home"){
+        return (
+            <View style={headerStyles.header}>
+                <TouchableOpacity onPress={() => navigate.navigate(props.leftHeader)}>
+                    <Text style={hyperlinkStyles.hyperLink}>{props.leftHeader}</Text>
+                </TouchableOpacity>
+                <Text style={headerStyles.headerText}>{props.title}</Text>
+                <TouchableOpacity onPress = {() => logout()}>
+                    <Text style={hyperlinkStyles.hyperLink}>{props.rightHeader}</Text>
+                </TouchableOpacity>
+            </View> 
+            );
+    }
 
-    
+    else if (props.title == "Profile"){
+        return (
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigate.navigate(props.leftHeader)}>
+                    <Text style={hyperlinkStyles.hyperLink}>{props.leftHeader}</Text>
+                </TouchableOpacity>
+                <Text style={headerStyles.headerText}>{props.title}</Text>
+                <TouchableOpacity onPress = {() => logout()}>
+                    <Text style={hyperlinkStyles.hyperLink}>{props.rightHeader}</Text>
+                </TouchableOpacity>
+            </View> 
+            );
+    }
 
         
-
-        return (
-        <View style={headerStyles.header}>
-            <TouchableOpacity onPress={() => navigate.navigate(props.leftHeader)}>
-                <Text style={hyperlinkStyles.hyperLink}>{props.leftHeader}</Text>
-            </TouchableOpacity>
-            <Text style={headerStyles.headerText}>{props.title}</Text>
-            <TouchableOpacity onPress = {() => logout()}>
-                <Text style={hyperlinkStyles.hyperLink}>{props.rightHeader}</Text>
-            </TouchableOpacity>
-        </View> 
-        );
 }
+
+const styles = StyleSheet.create({
+    header: {
+        width: '100%',
+        height: '30%',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        paddingTop: '15%',
+        backgroundColor: '#EB5757'
+    },
+    
+    
+    })

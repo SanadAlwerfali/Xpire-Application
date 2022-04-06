@@ -12,6 +12,7 @@ import bodyStyles from "../styles/bodyStyles";
 import { useNavigation } from '@react-navigation/core';
 import { Firestore } from 'firebase/firestore';
 import firebase from 'firebase/compat/app';
+import Footer from '../components/Footer';
 
 
 export default class Profile extends Component {
@@ -33,7 +34,6 @@ export default class Profile extends Component {
         .then(result => result.docs)
         .then((docs) => {
             docs.forEach((doc) => {
-                
                 if(doc.id == this.uid){
                     //console.log(doc.data().name);
                     this.setState ({
@@ -101,24 +101,28 @@ export default class Profile extends Component {
     
     <View>
         <Header title="Profile" rightHeader="Logout" leftHeader="Home"/>
-        <View style={bodyStyles.body}>
+        <View style={styles.body}>
             <View style={styles.userPicStyles}>
                 <Avatar.Image 
                 source={{
                 uri: this.state.userImage,
                 }}
-                size={90}
+                size={170}
+                style={styles.picStyles}
                 />
             </View>
-        </View>
-        <View>
-        <TouchableOpacity onPress = {() => this.confirmAccountDeletion(this.uid)}>
+            <Text style={styles.displayNameStyle}>{this.state.displayName}</Text>
+            <View style={styles.mainBody}>
+            <TouchableOpacity style={styles.buttons} onPress = {() => this.confirmAccountDeletion(this.uid)}>
                     <Text style={styles.buttonText}>Delete Account</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress = {() => this.confirmItemsDeletion(this.uid)}>
+            <TouchableOpacity style={styles.buttons} onPress = {() => this.confirmItemsDeletion(this.uid)}>
                     <Text style={styles.buttonText}>Delete All Items</Text>
             </TouchableOpacity>
+            </View>
         </View>
+        <Footer location="Profile"/>
+        
     </View>
     
     );
@@ -128,13 +132,50 @@ export default class Profile extends Component {
 
 const styles = StyleSheet.create({
     userPicStyles: {
-        backgroundColor: 'black',
-        alignItems: 'center',
-        justifyContent: 'flex-end'
+        borderColor: 'white',
+        // backgroundColor: 'black',
+        // alignItems: 'center',
+        // justifyContent: 'flex-start'
+        marginTop: '-30%',
+    },
+    picStyles:{
+        borderColor: 'white',
+        borderWidth: 2
     },
     profileMainBody:{
         backgroundColor: 'red'
     },
+    displayNameStyle:{
+        fontWeight: '500',
+        fontSize: 24,
+        color: '#000000',
+        marginTop: '3%'
+    },
+    body:{
+        width: '100%',
+        height: '55%',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        // marginTop: -16,
+        backgroundColor: 'white',
+        flexDirection: 'column',
+    },
+    mainBody:{
+        flexDirection: 'row',
+    },
+    buttons:{
+        marginTop: '20%',
+        marginHorizontal: '5%',
+        backgroundColor: '#EB5757',
+        justifyContent: 'center',
+        width: '40%',
+        height: '25%',
+        borderRadius: 100
+    },
+    buttonText:{
+        color: '#FFFFFF',
+        alignSelf: 'center'
+    }
 })
 
 {/* <Avatar.Image 
