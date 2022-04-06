@@ -1,13 +1,8 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/core'
 import { React, useEffect, useState } from 'react'
 import db from '../firebase';
 import auth from "../firebaseAuth";
-
-import * as Google from 'expo-auth-session/providers/google';
-
-
 
 export default function Signup () {
 

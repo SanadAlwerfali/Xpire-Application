@@ -1,17 +1,12 @@
-import React, {Component, useEffect} from "react";
-
-import { View, StyleSheet, Text} from "react-native";
+import React, {Component} from "react";
+import { View, StyleSheet} from "react-native";
 import AddItemsModal from "../components/AddItemsModal";
-import * as firebase from "firebase/firestore";
 import db from "../firebase";
-import auth from "../firebaseAuth";
-import { doc } from "firebase/firestore";
 import Header from "../components/Header"
 import Items from "../components/Items";
 import Searchbar from "../components/Searchbar";
 import Footer from "../components/Footer";
 import bodyStyles from "../styles/bodyStyles";
-import { getItems } from "../src/api/ItemsApi";
 import { getAuth } from "firebase/auth";
 import { MaterialIcons } from '@expo/vector-icons';
 

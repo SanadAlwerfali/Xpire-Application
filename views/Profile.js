@@ -1,28 +1,15 @@
 
 import { getAuth } from 'firebase/auth';
 import React from 'react';
-import { render } from 'react-dom';
-import {View, SafeAreaView, StyleSheet,TouchableOpacity, Alert, Dimensions } from 'react-native';
-import { Avatar, Title, Caption, Text, TouchableRipple} from 'react-native-paper';
+import {View, StyleSheet,TouchableOpacity, Alert, Dimensions } from 'react-native';
+import { Avatar, Text} from 'react-native-paper';
 import db from '../firebase';
-import auth from "../firebaseAuth";
 import { Component } from "react";
 import Header from '../components/Header';
-import bodyStyles from "../styles/bodyStyles";
-import { useNavigation } from '@react-navigation/core';
-import { Firestore } from 'firebase/firestore';
 import firebase from 'firebase/compat/app';
-import Footer from '../components/Footer';
 import footerStyles from '../styles/footerStyles';
 import { MaterialIcons } from '@expo/vector-icons';
-import {
-    LineChart,
-    BarChart,
-    PieChart,
-    ProgressChart,
-    ContributionGraph,
-    StackedBarChart
-  } from "react-native-chart-kit";
+import { LineChart } from "react-native-chart-kit";
 
 export default class Profile extends Component {
 

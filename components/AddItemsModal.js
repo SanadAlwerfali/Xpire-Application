@@ -9,7 +9,7 @@ import db from "../firebase";
 import { getAuth } from "firebase/auth";
 
 export default class AddItemsModal extends Component{
-    
+
     //adding a constructor to get props from parent components
     constructor(props){
         super(props);
@@ -171,7 +171,7 @@ export default class AddItemsModal extends Component{
                                         <Text style={styles.selectorButtons}>Replace Image</Text>  
                                     </TouchableOpacity> 
                                     <TouchableOpacity onPress={this.deleteImage}>
-                                        <Text style={styles.selectorButtons}>Delete Image</Text>  
+                                        <Text style={styles.deleteButtons}>Delete Image</Text>  
                                     </TouchableOpacity> 
                                 </View>
                             </View>
@@ -196,7 +196,7 @@ export default class AddItemsModal extends Component{
                                     <Text style={styles.selectorButtons}>Replace Date</Text>  
                                 </TouchableOpacity> 
                                 <TouchableOpacity onPress={this.deleteDate}>
-                                    <Text style={styles.selectorButtons}>Delete Date</Text>  
+                                    <Text style={styles.deleteButtons}>Delete Date</Text>  
                                 </TouchableOpacity> 
                             </View>
                         </View>
@@ -391,6 +391,13 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         fontSize: 16,
         color: '#0000EE',
+        paddingHorizontal: '3%',
+        alignSelf: 'center'
+    },
+    deleteButtons:{
+        fontWeight: '500',
+        fontSize: 16,
+        color: '#EB5757',
         paddingHorizontal: '3%',
         alignSelf: 'center'
     },
