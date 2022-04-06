@@ -87,14 +87,17 @@ const navigation = useNavigation();
                     db.collection('users').doc(uid).get()
                     .then(user => {
                         if (user.exists){
+                            console.log("user exisits");
                             navigation.navigate('Home');
                         }
                         else{
-                            db.collection('users').doc(uid).update({
+                            console.log("about to creat a user record for: ", uid);
+                            db.collection('users').doc(uid).set({
                                 name: name,
                                 image: picture,
                                 items: [],
                             }).then(()=> {
+                                console.log("user created");
                                 navigation.navigate('Home');
                             }).catch(() => {
                                 alert("Please enter a valid email/password")

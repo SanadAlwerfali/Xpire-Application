@@ -36,13 +36,19 @@ export default class Home extends Component {
         .then(result => result.docs)
         .then((docs) => {
             docs.forEach((doc) => {
-                
+                console.log("user id is: ", this.uid);
                 if(doc.id == this.uid){
+                    console.log("we are here ");
                     this.setState ({
                         filteredUserItems: doc.data()['items'],
                         masterUserItems: doc.data()['items'],
                         isLoading: false,
                     }) 
+                }
+                else{
+                    this.setState ({
+                        isLoading: false,
+                    })  
                 } 
             })
         })

@@ -2,7 +2,7 @@
 import { getAuth } from 'firebase/auth';
 import React from 'react';
 import { render } from 'react-dom';
-import {View, SafeAreaView, StyleSheet,TouchableOpacity, Alert } from 'react-native';
+import {View, SafeAreaView, StyleSheet,TouchableOpacity, Alert, Dimensions } from 'react-native';
 import { Avatar, Title, Caption, Text, TouchableRipple} from 'react-native-paper';
 import db from '../firebase';
 import auth from "../firebaseAuth";
@@ -13,7 +13,16 @@ import { useNavigation } from '@react-navigation/core';
 import { Firestore } from 'firebase/firestore';
 import firebase from 'firebase/compat/app';
 import Footer from '../components/Footer';
+import footerStyles from '../styles/footerStyles';
 
+import {
+    LineChart,
+    BarChart,
+    PieChart,
+    ProgressChart,
+    ContributionGraph,
+    StackedBarChart
+  } from "react-native-chart-kit";
 
 export default class Profile extends Component {
    
@@ -22,6 +31,7 @@ export default class Profile extends Component {
         this.state = {
              displayName: "",
              userImage: "",
+             expiredItems: "",
              isLoading: true,
          }
     }
@@ -39,6 +49,11 @@ export default class Profile extends Component {
                     this.setState ({
                         displayName: doc.data().name,
                         userImage: doc.data().image,
+                        isLoading: false,
+                    }) 
+                }
+                else{
+                    this.setState ({
                         isLoading: false,
                     }) 
                 } 
@@ -113,15 +128,64 @@ export default class Profile extends Component {
             </View>
             <Text style={styles.displayNameStyle}>{this.state.displayName}</Text>
             <View style={styles.mainBody}>
-            <TouchableOpacity style={styles.buttons} onPress = {() => this.confirmAccountDeletion(this.uid)}>
-                    <Text style={styles.buttonText}>Delete Account</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.buttons} onPress = {() => this.confirmItemsDeletion(this.uid)}>
-                    <Text style={styles.buttonText}>Delete All Items</Text>
-            </TouchableOpacity>
+                <Text>Number of Expired Items</Text>
             </View>
+            <LineChart
+                data={{
+                labels: ["January", "February", "March", "April", "May", "June"],
+                datasets: [
+                    {
+                    data: [
+                        Math.random() * 10,
+                        Math.random() * 10,
+                        Math.random() * 10,
+                        Math.random() * 10,
+                        Math.random() * 10,
+                        Math.random() * 10
+                    ]
+                    }
+                ]
+                }}
+                width={Dimensions.get("window").width} // from react-native
+                height={220}
+                yAxisLabel=""
+                yAxisSuffix=""
+                yAxisInterval={1} // optional, defaults to 1
+                chartConfig={{
+                backgroundColor: "#e26a00",
+                backgroundGradientFrom: "#fb8c00",
+                backgroundGradientTo: "#ffa726",
+                decimalPlaces: 2, // optional, defaults to 2dp
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                style: {
+                    borderRadius: 16
+                },
+                propsForDots: {
+                    r: "6",
+                    strokeWidth: "2",
+                    stroke: "#ffa726"
+                }
+                }}
+                bezier
+                style={{
+                marginVertical: 8,
+                borderRadius: 16
+                }}
+            />
         </View>
-        <Footer location="Profile"/>
+        <View style={footerStyles.footer}>
+            <TouchableOpacity>
+                <View style={styles.mainBody}>
+                <TouchableOpacity style={styles.buttons} onPress = {() => this.confirmAccountDeletion(this.uid)}>
+                        <Text style={styles.buttonText}>Delete Account</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttons} onPress = {() => this.confirmItemsDeletion(this.uid)}>
+                        <Text style={styles.buttonText}>Delete All Items</Text>
+                </TouchableOpacity>
+                </View>
+            </TouchableOpacity>        
+        </View>
         
     </View>
     
@@ -162,14 +226,16 @@ const styles = StyleSheet.create({
     },
     mainBody:{
         flexDirection: 'row',
+        justifyContent: 'flex-start',
+        marginTop: '3%'
     },
     buttons:{
-        marginTop: '20%',
+        marginTop: '5%',
         marginHorizontal: '5%',
         backgroundColor: '#EB5757',
         justifyContent: 'center',
         width: '40%',
-        height: '25%',
+        height: '70%',
         borderRadius: 100
     },
     buttonText:{
