@@ -123,7 +123,6 @@ export default class Home extends Component {
                 </View>
                 <Footer location="Home" modalVisible={this.state.modalVisible} setModalVisible ={this.setModalVisible}/>
             </View>
-        
         );
     }
 }
@@ -135,4 +134,4 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    })
+    }) 
