@@ -1,19 +1,21 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { registerRootComponent } from 'expo';
-import Welcome from './screens/Welcome';
-import Signup from './screens/Signup';
-import Login from './screens/Login';
+import Welcome from './views/Welcome';
+import Signup from './views/Signup';
+import Login from './views/Login';
 import Home from './views/Home';
-import Profile from './screens/Profile';
+import Profile from './views/Profile';
+import { LogBox } from 'react-native';
 
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  LogBox.ignoreAllLogs(true);
   return (
+    //using a stack navigator to navigate the user between different views
     <NavigationContainer>
     <Stack.Navigator>
       <Stack.Screen options={{ headerShown: false }} name="Welcome" component={Welcome} />

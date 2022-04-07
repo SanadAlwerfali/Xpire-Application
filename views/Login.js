@@ -2,13 +2,11 @@ import { React, useEffect, useState } from 'react'
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import { useNavigation } from '@react-navigation/core'
-import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView, Button } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, TextInput, KeyboardAvoidingView } from 'react-native'
 import db from '../firebase';
 import auth from "../firebaseAuth";
 import * as Facebook from 'expo-auth-session/providers/facebook';
-import { Platform } from 'react-native';
 import { ResponseType } from 'expo-auth-session';
-import itemsStyles from '../styles/itemsStyles';
 import { FacebookAuthProvider, getAuth, GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
 WebBrowser.maybeCompleteAuthSession();
 
@@ -87,17 +85,14 @@ const navigation = useNavigation();
                     db.collection('users').doc(uid).get()
                     .then(user => {
                         if (user.exists){
-                            console.log("user exisits");
                             navigation.navigate('Home');
                         }
                         else{
-                            console.log("about to creat a user record for: ", uid);
                             db.collection('users').doc(uid).set({
                                 name: name,
                                 image: picture,
                                 items: [],
                             }).then(()=> {
-                                console.log("user created");
                                 navigation.navigate('Home');
                             }).catch(() => {
                                 alert("Please enter a valid email/password")

@@ -1,19 +1,22 @@
 import React, {Component}from 'react';
-import {View, TouchableOpacity } from 'react-native';
+import {View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import footerStyles from '../styles/footerStyles';
 import {MaterialIcons } from '@expo/vector-icons';
 
 
 export default class Footer extends Component {
+    //adding a constructor to get props from parent components
     constructor(props){
         super(props);
     }
     render () {
+        
+        //return fotters with different texts based on which screen is rendering them
         if (this.props.location == "Home"){
             return (
                 <View style={footerStyles.footer}>
                     <TouchableOpacity>
-                        <View>
+                        <View >
                             <MaterialIcons
                             name='add-circle-outline'
                             size={50}
@@ -24,22 +27,70 @@ export default class Footer extends Component {
                 </View>
             );
         }
-        else if (this.props.location == "Welcome"){
+        else if (this.props.location == "Profile"){
             return(
-                <View style={styles.footer}>
-                    <View style={styles.footerTop}>
-                        <Text style={styles.footerText}>Welcome</Text>
-                    </View>
-                    <View style={styles.footerBottom}>
-                        <TouchableOpacity style={styles.buttons}>
-                            <Text style={styles.buttonText}>Sign Up</Text>  
+                <View style={footerStyles.footer}>
+                    <TouchableOpacity>
+                        <View style={styles.mainBody}>
+                        <TouchableOpacity style={styles.buttons} onPress = {() => this.confirmAccountDeletion(this.uid)}>
+                                <Text style={styles.buttonText}>Delete Account</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttons}>
-                            <Text style={styles.buttonText}>Log In</Text>
+                        <TouchableOpacity style={styles.buttons} onPress = {() => this.confirmItemsDeletion(this.uid)}>
+                                <Text style={styles.buttonText}>Delete All Items</Text>
                         </TouchableOpacity>
-                    </View> 
-                </View> 
+                        </View>
+                    </TouchableOpacity>        
+                </View>
             );
         }
     }
 }
+
+const styles = StyleSheet.create({
+    userPicStyles: {
+        borderColor: 'white',
+        // backgroundColor: 'black',
+        // alignItems: 'center',
+        // justifyContent: 'flex-start'
+        marginTop: '-30%',
+    },
+    picStyles:{
+        borderColor: 'white',
+        borderWidth: 2
+    },
+    profileMainBody:{
+        backgroundColor: 'red'
+    },
+    displayNameStyle:{
+        fontWeight: '500',
+        fontSize: 24,
+        color: '#000000',
+        marginTop: '3%'
+    },
+    body:{
+        width: '100%',
+        height: '55%',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        // marginTop: -16,
+        backgroundColor: 'white',
+        flexDirection: 'column',
+    },
+    mainBody:{
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+    },
+    buttons:{
+        marginTop: '7%',
+        marginHorizontal: '5%',
+        backgroundColor: '#EB5757',
+        justifyContent: 'center',
+        width: '40%',
+        height: '50%',
+        borderRadius: 100
+    },
+    buttonText:{
+        color: '#FFFFFF',
+        alignSelf: 'center'
+    }
+})

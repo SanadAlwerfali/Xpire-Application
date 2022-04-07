@@ -1,28 +1,28 @@
-import React, {useState, Component} from "react";
-import { View, Modal, StyleSheet, Text, Textinput, TouchableOpacity, Button, Image } from 'react-native';
-import { Formik } from "formik";
+import React, {Component} from "react";
+import { View, Modal, StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
 import { TextInput } from "react-native-paper";
 import { MaterialIcons } from '@expo/vector-icons';
-import { addItem, getItems } from "../src/api/ItemsApi";
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import firebase from 'firebase/compat/app';
 import db from "../firebase";
-import auth from "../firebaseAuth";
 import { getAuth } from "firebase/auth";
 
 export default class AddItemsModal extends Component{
+
+    //adding a constructor to get props from parent components
     constructor(props){
         super(props);
         this.state = {
-            itemName: "",
+            itemName: "", //states to hold data about item being added
             itemImage: "",
             itemexpiryDate: "",
             displayDate: "",
-            datePickerModalVisible: false,
+            datePickerModalVisible: false, //state to make sure date picker modal is not displayed unless requested
         }
     }
 
+    //function that allows functionality of adding items from user's gallery
     pickImageFromGallery = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -32,14 +32,17 @@ export default class AddItemsModal extends Component{
           quality: 1,
         });
 
+        // Save Image to state
         if (!result.cancelled) {
             this.setState({ itemImage : result.uri});
             return result.uri;
         }
     }
 
+    //function that allows functionality of adding items from user's gallery
     pickImageFromCamera = async () => {
-        // No permissions request is necessary for launching the image library
+
+        // Permissions request is necessary for launching the user's camera
         const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
         if (permissionResult.granted === false) {
@@ -49,42 +52,46 @@ export default class AddItemsModal extends Component{
 
         const result = await ImagePicker.launchCameraAsync();
 
-        // Explore the result
-
+        // Save Image to state
         if (!result.cancelled) {
             this.setState({ itemImage : result.uri});
         }
     }
 
+    //function to delete added image by unsetting the state
     deleteImage = () => {
         this.setState({itemImage: ""});
     }
+
+    //function to delete added date by unsetting the state
     deleteDate = () => {
         this.setState({displayDate: "", itemexpiryDate: ""});
     }
     
+    //function to hide the date time picker once the user selects a date
     hideDatePicker = () => {
         this.setState({
             datePickerModalVisible: false
         });
       };
     
+    //function to handle the confirm of the date picker by saving the date to the state
     handleConfirm = (date) => {
         const dateTimeStamp = firebase.firestore.Timestamp.fromDate(date);
         this.setState ({
             itemexpiryDate: dateTimeStamp,
             displayDate: date
         });
-        this.hideDatePicker();
+        this.hideDatePicker(); //hiding date time picker once the user selects a date
     };
 
+    //fuction to parse the selected date in order to show the user the date they selected
     getParsedDate(strDate){
         var date = "";
-        // alert(date);
         var dd = strDate.getDate();
-        var mm = strDate.getMonth() + 1; //January is 0!
-    
+        var mm = strDate.getMonth() + 1; 
         var yyyy = strDate.getFullYear();
+
         if (dd < 10) {
             dd = '0' + dd;
         }
@@ -95,13 +102,15 @@ export default class AddItemsModal extends Component{
         return date.toString();
     }
     
+    //function to show date view once the user wants to enter a date
     toggleDateView = () => {
         this.setState ({
             datePickerModalVisible: true
         });
     } 
-    uid = getAuth().currentUser.uid;
+    uid = getAuth().currentUser.uid; //getting Unique ID of user to use this to add items to the user's document in Firebase
 
+    //function that takes in all the data that the user inputted and adds it to the database
     addItemsToDb = (itemData) => {
         db.collection('users')
         .doc(this.uid)
@@ -117,6 +126,7 @@ export default class AddItemsModal extends Component{
         
     }
     
+    //function that handles the submit of the form by setting the user given values to the states
     handleSubmit = () => {
         if (this.state.itemImage!="" && this.state.itemexpiryDate!="" && this.state.itemName!=""){
             this.addItemsToDb({
@@ -139,7 +149,8 @@ export default class AddItemsModal extends Component{
     render () {
         let requestImgView;
         let dateView;
-        if (this.state.itemImage == "") {
+        //checking if image has been added or not
+        if (this.state.itemImage == "") { //if image has not been added, prompt user with buttons to add image
             requestImgView = <View style={styles.imagePickerContainer}>
                         <Text style={styles.modalSubHeaders}>Add Picture</Text>
                         <View style={styles.imagePickerButtons}>
@@ -151,7 +162,7 @@ export default class AddItemsModal extends Component{
                             </TouchableOpacity>
                         </View>
                     </View>
-          } else {
+          } else { //if image has been added, prompt user with buttons to delete or replace image
             requestImgView = <View style={styles.imagePickerContainer}>
                                 <Text style={styles.modalSubHeaders}>Add Picture</Text>    
                                 <View style={styles.imagePickerButtons}>
@@ -160,13 +171,14 @@ export default class AddItemsModal extends Component{
                                         <Text style={styles.selectorButtons}>Replace Image</Text>  
                                     </TouchableOpacity> 
                                     <TouchableOpacity onPress={this.deleteImage}>
-                                        <Text style={styles.selectorButtons}>Delete Image</Text>  
+                                        <Text style={styles.deleteButtons}>Delete Image</Text>  
                                     </TouchableOpacity> 
                                 </View>
                             </View>
           }
-          if (this.state.itemexpiryDate == "") {
 
+          //checking if date has been added or not
+          if (this.state.itemexpiryDate == "") {//if date has not been added, prompt user with buttons to add date
             dateView =  <View style={styles.imagePickerContainer}>
                             <Text style={styles.modalSubHeaders}>Add Date</Text>
                             <View style={styles.imagePickerButtons}>
@@ -175,7 +187,7 @@ export default class AddItemsModal extends Component{
                                 </TouchableOpacity>
                             </View>
                         </View>
-          } else {
+          } else { //if date has been added, prompt user with buttons to delete or replace date
             dateView = <View style={styles.imagePickerContainer}>
                             <Text style={styles.modalSubHeaders}>Add Date</Text>
                             <View style={styles.imagePickerButtons}>
@@ -184,7 +196,7 @@ export default class AddItemsModal extends Component{
                                     <Text style={styles.selectorButtons}>Replace Date</Text>  
                                 </TouchableOpacity> 
                                 <TouchableOpacity onPress={this.deleteDate}>
-                                    <Text style={styles.selectorButtons}>Delete Date</Text>  
+                                    <Text style={styles.deleteButtons}>Delete Date</Text>  
                                 </TouchableOpacity> 
                             </View>
                         </View>
@@ -379,6 +391,13 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         fontSize: 16,
         color: '#0000EE',
+        paddingHorizontal: '3%',
+        alignSelf: 'center'
+    },
+    deleteButtons:{
+        fontWeight: '500',
+        fontSize: 16,
+        color: '#EB5757',
         paddingHorizontal: '3%',
         alignSelf: 'center'
     },

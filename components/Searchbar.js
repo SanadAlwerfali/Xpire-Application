@@ -5,6 +5,8 @@ import { View } from "react-native";
 
 
 export default class Searchbar extends Component {
+    
+    //adding a constructor to get props from parent components
     constructor(props){
         super(props);
     }

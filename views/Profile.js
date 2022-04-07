@@ -1,31 +1,19 @@
 
 import { getAuth } from 'firebase/auth';
 import React from 'react';
-import { render } from 'react-dom';
-import {View, SafeAreaView, StyleSheet,TouchableOpacity, Alert, Dimensions } from 'react-native';
-import { Avatar, Title, Caption, Text, TouchableRipple} from 'react-native-paper';
+import {View, StyleSheet,TouchableOpacity, Alert, Dimensions } from 'react-native';
+import { Avatar, Text} from 'react-native-paper';
 import db from '../firebase';
-import auth from "../firebaseAuth";
 import { Component } from "react";
 import Header from '../components/Header';
-import bodyStyles from "../styles/bodyStyles";
-import { useNavigation } from '@react-navigation/core';
-import { Firestore } from 'firebase/firestore';
 import firebase from 'firebase/compat/app';
-import Footer from '../components/Footer';
 import footerStyles from '../styles/footerStyles';
-
-import {
-    LineChart,
-    BarChart,
-    PieChart,
-    ProgressChart,
-    ContributionGraph,
-    StackedBarChart
-  } from "react-native-chart-kit";
+import { MaterialIcons } from '@expo/vector-icons';
+import { LineChart } from "react-native-chart-kit";
 
 export default class Profile extends Component {
-   
+
+    //adding a constructor to get props from parent components
     constructor(props){
         super (props);
         this.state = {
@@ -36,8 +24,9 @@ export default class Profile extends Component {
          }
     }
 
-    uid = getAuth().currentUser.uid;
+    uid = getAuth().currentUser.uid; //getting Unique ID of user to use this to get items of that specific user
     
+    //funciton that gets the logged in user's items
     getUserInformation = () => {
         db.collection('users')
         .get()
@@ -63,7 +52,8 @@ export default class Profile extends Component {
             console.error('Couldnt get itmes', error)
         })   
     }
-    
+        
+    //function that handles the deletion of all tiems by deleting all items of the user from the database
     deleteAllItems = async (uid) => {
         const accountRef = db.collection('users').doc(uid);
         // Remove the 'items' field from the document
@@ -76,11 +66,13 @@ export default class Profile extends Component {
         .catch((error) => console.log(error));        
     }
 
+    //function that handles the deletion of account by deleting the account from the database
     deleteAccount = async (uid) => {
         const res = await db.collection('users').doc(uid).delete();
         this.props.navigation.navigate('Welcome');
     }
 
+    //function that handles the confirmation of item deletion
     confirmItemsDeletion = (uid) => {
         Alert.alert('Delete My Items', 'You are about to delete all your items, would you like to continue?', [
             {
@@ -91,6 +83,7 @@ export default class Profile extends Component {
           ]);
     }
 
+    //function that handles the confirmation of account deletion
     confirmAccountDeletion = (uid) => {
         Alert.alert('Delete Account', 'We are sad to see you go! would you like to continue?', [
             {
@@ -101,15 +94,23 @@ export default class Profile extends Component {
           ]);
     }
 
+    //getting User Data as soon as the component mounts
     componentDidMount () {
         this.getUserInformation();
         console.log(this.uid);
     }
 
     render(){
+    //check if data has been successfully fetched from database before returning the main View.
      if(this.state.isLoading){
         return (
-            <View><Text>Loading</Text></View>
+            <View style={styles.loadingStyle}>
+                <MaterialIcons
+                name='refresh'
+                size={50}
+                onPress={() => this.props.setModalVisible(false)}
+                />
+            </View>
         )
     }
     return (
@@ -132,16 +133,13 @@ export default class Profile extends Component {
             </View>
             <LineChart
                 data={{
-                labels: ["January", "February", "March", "April", "May", "June"],
+                labels: ["March","April"],
                 datasets: [
                     {
                     data: [
-                        Math.random() * 10,
-                        Math.random() * 10,
-                        Math.random() * 10,
-                        Math.random() * 10,
-                        Math.random() * 10,
-                        Math.random() * 10
+                        3,
+                        2,
+                        
                     ]
                     }
                 ]
@@ -202,9 +200,15 @@ const styles = StyleSheet.create({
         // justifyContent: 'flex-start'
         marginTop: '-30%',
     },
+    loadingStyle: {
+        flex: 1,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     picStyles:{
         borderColor: 'white',
-        borderWidth: 2
+        alignSelf: 'center'
     },
     profileMainBody:{
         backgroundColor: 'red'

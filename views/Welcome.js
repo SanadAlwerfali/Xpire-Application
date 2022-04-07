@@ -1,8 +1,9 @@
-import React from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
-import Footer from '../components/Footer';
+import { useNavigation } from '@react-navigation/core'
+import {React } from 'react'
+
 export default function Welcome() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
         <View style={styles.body}>
@@ -10,7 +11,19 @@ export default function Welcome() {
                 <Image style={styles.image} source={require('../assets/splash.png')} /> 
             </View>
         </View>
-        <Footer location="Home"/>
+        <View style={styles.footer}>
+            <View style={styles.footerTop}>
+                <Text style={styles.footerText}>Welcome</Text>
+            </View>
+            <View style={styles.footerBottom}>
+                <TouchableOpacity onPress={() => navigation.navigate('Signup')} style={styles.buttons}>
+                    <Text style={styles.buttonText}>Sign Up</Text>  
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.buttons}>
+                    <Text style={styles.buttonText}>Log In</Text>
+                </TouchableOpacity>
+            </View> 
+        </View>
     </View>
   );
 }
